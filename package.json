@@ -4,13 +4,13 @@
   "description": "Zodiom is a mesmerizing 3D cosmic simulator that lets you explore the solar system across space and time. Witness planetary alignments, travel to any date in history or the future, and toggle between photorealistic and mystical modes infused with sacred geometry and celestial symbolism.  Built for stargazers, seekers, and space nerds alike.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test",
     "build": "browserify src/main.js -p esmify -o public/bundle.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "astronomy-bundle": "^7.7.7",
     "three": "^0.177.0"

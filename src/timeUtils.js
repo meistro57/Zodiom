@@ -1,4 +1,4 @@
-import {createTimeOfInterest} from 'astronomy-bundle/time';
+import {createTimeOfInterest} from 'astronomy-bundle/time/index.js';
 
 export function parseDateTime(value) {
   if (!value) {
