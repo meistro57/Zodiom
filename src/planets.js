@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {createSun} from 'astronomy-bundle/sun';
-import {createEarth, createMars} from 'astronomy-bundle/planets';
+import {createEarth, createMars, createJupiter} from 'astronomy-bundle/planets';
 
 const SCALE = 5; // scale factor for visualization
 
@@ -8,6 +8,7 @@ export function createPlanetMeshes(toi) {
   const sun = createSun(toi);
   const earth = createEarth(toi);
   const mars = createMars(toi);
+  const jupiter = createJupiter(toi);
 
   const sunMesh = new THREE.Mesh(
     new THREE.SphereGeometry(0.5, 32, 32),
@@ -24,15 +25,22 @@ export function createPlanetMeshes(toi) {
     new THREE.MeshStandardMaterial({color: 0xff5533})
   );
 
+  const jupiterMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(0.3, 32, 32),
+    new THREE.MeshStandardMaterial({color: 0xffaa33})
+  );
+
   const earthOrbit = createOrbitLine(1 * SCALE);
   const marsOrbit = createOrbitLine(1.52 * SCALE);
+  const jupiterOrbit = createOrbitLine(5.2 * SCALE);
 
   return {
-    objects: [sunMesh, earthMesh, marsMesh, earthOrbit, marsOrbit],
+    objects: [sunMesh, earthMesh, marsMesh, jupiterMesh, earthOrbit, marsOrbit, jupiterOrbit],
     bodies: {
       sun: {mesh: sunMesh, astro: sun},
       earth: {mesh: earthMesh, astro: earth},
       mars: {mesh: marsMesh, astro: mars},
+      jupiter: {mesh: jupiterMesh, astro: jupiter},
     }
   };
 }
@@ -60,4 +68,7 @@ export async function updatePositions(bodies, toi) {
 
   const marsCoords = await bodies.mars.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
   bodies.mars.mesh.position.set(marsCoords.x * SCALE, marsCoords.z * SCALE, marsCoords.y * SCALE);
+
+  const jupiterCoords = await bodies.jupiter.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
+  bodies.jupiter.mesh.position.set(jupiterCoords.x * SCALE, jupiterCoords.z * SCALE, jupiterCoords.y * SCALE);
 }

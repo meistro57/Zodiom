@@ -2,7 +2,7 @@ import * as THREE from "three";
 import {setupScene} from './setupScene.js';
 import {parseDateTime} from './timeUtils.js';
 import {createPlanetMeshes, updatePositions} from './planets.js';
-import {createEarth, createMars} from "astronomy-bundle/planets";
+import {createEarth, createMars, createJupiter} from "astronomy-bundle/planets";
 import {createSun as createSunSolo} from "astronomy-bundle/sun";
 const container = document.body;
 const {scene, camera, renderer, controls, light} = setupScene(container);
@@ -23,6 +23,7 @@ async function refresh() {
   bodies.sun.astro = createSunSolo(toi);
   bodies.earth.astro = createEarth(toi);
   bodies.mars.astro = createMars(toi);
+  bodies.jupiter.astro = createJupiter(toi);
   await updatePositions(bodies, toi);
 }
 
@@ -45,6 +46,15 @@ mysticToggle.addEventListener('change', () => {
     }
     obj.material.needsUpdate = true;
   });
+});
+
+const lightToggle = document.getElementById('lightToggle');
+lightToggle.addEventListener('change', () => {
+  if (lightToggle.checked) {
+    document.body.classList.add('light');
+  } else {
+    document.body.classList.remove('light');
+  }
 });
 
 refresh();

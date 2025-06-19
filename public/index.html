@@ -4,15 +4,18 @@
   <meta charset="UTF-8">
   <title>Zodiom Prototype</title>
   <style>
-    body { margin: 0; overflow: hidden; font-family: sans-serif; }
+    body { margin: 0; overflow: hidden; font-family: sans-serif; background: radial-gradient(circle at center, #112, #000); color: #fff; }
+    body.light { background: radial-gradient(circle at center, #eef, #558); color: #000; }
     #ui {
       position: absolute;
       top: 10px; left: 10px;
-      background: rgba(255,255,255,0.8);
+      background: rgba(0,0,0,0.6);
       padding: 10px;
-      border-radius: 4px;
+      border-radius: 8px;
     }
+    body.light #ui { background: rgba(255,255,255,0.8); }
     canvas { display: block; }
+    label { margin-right: 8px; }
   </style>
 </head>
 <body>
@@ -24,6 +27,10 @@
     <label>
       Mystic Mode
       <input type="checkbox" id="mysticToggle" />
+    </label>
+    <label>
+      Light Mode
+      <input type="checkbox" id="lightToggle" />
     </label>
   </div>
   <script src="bundle.js"></script>
