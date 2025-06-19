@@ -1,13 +1,37 @@
 # Zodiom
-Zodiom is a mesmerizing 3D cosmic simulator that lets you explore the solar system across space and time. Witness planetary alignments, travel to any date in history or the future, and toggle between photorealistic and mystical modes infused with sacred geometry and celestial symbolism.  Built for stargazers, seekers, and space nerds alike.
 
-## Development
+Zodiom is an in-browser 3D cosmic simulator built with Three.js and Astronomy Bundle. It lets you witness planetary alignments across time and toggle between photorealistic and mystical modes infused with sacred geometry. Made for stargazers, seekers and space enthusiasts.
 
-Install dependencies and build the browser bundle:
+## Features
+
+- Real-time Sun, Earth and Mars positions
+- Travel to any date in history or the future
+- Mystic Mode for a symbolic, sacred look
+- Orbit controls to freely navigate the scene
+
+## Getting Started
+
+Install dependencies and build the demo bundle:
 
 ```bash
 npm install
 npm run build
 ```
 
-Open `public/index.html` in a browser to try the demo.
+Open `public/index.html` in a browser to explore the simulator.
+
+## Development
+
+Rebuild the bundle whenever you update the code:
+
+```bash
+npm run build
+```
+
+## Roadmap
+
+- Add all remaining planets and major moons
+- Animated timeline for smooth time travel
+- Highlight celestial events such as eclipses and conjunctions
+- Optional VR/AR mode
+- Ability to save and share favorite scenes
