@@ -24,10 +24,10 @@ npm install
 npm run build
 ```
 
-Start the development server and open `http://localhost:3000` in your browser:
+Start the development server (the bundle will be built automatically) and open `http://localhost:3000` in your browser:
 
 ```bash
-npm run serve
+npm start
 ```
 
 ## Development
