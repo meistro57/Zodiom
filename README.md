@@ -10,6 +10,10 @@ Zodiom is an in-browser 3D cosmic simulator built with Three.js and Astronomy Bu
 - Optional light mode for the UI
 - Orbit controls to freely navigate the scene
 - Animated timeline for smooth time travel
+- Planet labels with optional toggle
+- Toggle visibility of planetary orbits
+- Adjustable timeline speed
+- Reset camera position with one click
 
 ## Getting Started
 
