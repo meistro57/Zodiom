@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node --test",
-    "build": "browserify src/main.js -p esmify -o public/bundle.js"
+    "build": "browserify src/main.js -p esmify -o public/bundle.js",
+    "serve": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +14,8 @@
   "type": "module",
   "dependencies": {
     "astronomy-bundle": "^7.7.7",
-    "three": "^0.177.0"
+    "three": "^0.177.0",
+    "express": "^4.19.2"
   },
   "devDependencies": {
     "browserify": "^17.0.1",

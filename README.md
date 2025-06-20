@@ -19,7 +19,11 @@ npm install
 npm run build
 ```
 
-Open `public/index.html` in a browser to explore the simulator.
+Start the development server and open `http://localhost:3000` in your browser:
+
+```bash
+npm run serve
+```
 
 ## Development
 
