@@ -17,6 +17,8 @@ export function setupScene(container) {
   labelRenderer.setSize(window.innerWidth, window.innerHeight);
   labelRenderer.domElement.style.position = 'absolute';
   labelRenderer.domElement.style.top = '0px';
+  // Allow mouse interaction with underlying UI elements and the canvas
+  labelRenderer.domElement.style.pointerEvents = 'none';
   container.appendChild(labelRenderer.domElement);
 
   const controls = new OrbitControls(camera, renderer.domElement);
