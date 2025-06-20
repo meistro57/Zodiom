@@ -3,13 +3,13 @@ import {createSun} from 'astronomy-bundle/sun';
 import {
   createMercury,
   createVenus,
-  createEarth,
   createMars,
   createJupiter,
   createSaturn,
   createUranus,
   createNeptune
 } from 'astronomy-bundle/planets';
+import { createEarth } from 'astronomy-bundle/earth';
 
 const SCALE = 5; // scale factor for visualization
 
