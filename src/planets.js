@@ -14,6 +14,25 @@ import { createMoon } from 'astronomy-bundle/moon';
 
 const SCALE = 5; // scale factor for visualization
 
+const loader = new THREE.TextureLoader();
+
+function createSphereMesh(radius, color, texturePath, segments = 32) {
+  const geometry = new THREE.SphereGeometry(radius, segments, segments);
+  const material = new THREE.MeshStandardMaterial({color});
+  loader.load(
+    texturePath,
+    tex => {
+      material.map = tex;
+      material.needsUpdate = true;
+    },
+    undefined,
+    () => {
+      // ignore loading errors and keep fallback color
+    }
+  );
+  return new THREE.Mesh(geometry, material);
+}
+
 export function createPlanetMeshes(toi) {
   const sun = createSun(toi);
   const mercury = createMercury(toi);
@@ -31,51 +50,23 @@ export function createPlanetMeshes(toi) {
     new THREE.MeshBasicMaterial({color: 0xffff00})
   );
 
-  const mercuryMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.1, 32, 32),
-    new THREE.MeshStandardMaterial({color: 0xaaaaaa})
-  );
+  const mercuryMesh = createSphereMesh(0.1, 0xaaaaaa, 'textures/mercury.jpg');
 
-  const venusMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.15, 32, 32),
-    new THREE.MeshStandardMaterial({color: 0xffddaa})
-  );
+  const venusMesh = createSphereMesh(0.15, 0xffddaa, 'textures/venus.jpg');
 
-  const earthMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.2, 32, 32),
-    new THREE.MeshStandardMaterial({color: 0x3366ff})
-  );
+  const earthMesh = createSphereMesh(0.2, 0x3366ff, 'textures/earth.jpg');
 
-  const moonMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.05, 32, 32),
-    new THREE.MeshStandardMaterial({color: 0xdddddd})
-  );
+  const moonMesh = createSphereMesh(0.05, 0xdddddd, 'textures/moon.jpg', 64);
 
+  const marsMesh = createSphereMesh(0.15, 0xff5533, 'textures/mars.jpg');
 
-  const marsMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.15, 32, 32),
-    new THREE.MeshStandardMaterial({color: 0xff5533})
-  );
+  const jupiterMesh = createSphereMesh(0.3, 0xffaa33, 'textures/jupiter.jpg');
 
-  const jupiterMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.3, 32, 32),
-    new THREE.MeshStandardMaterial({color: 0xffaa33})
-  );
+  const saturnMesh = createSphereMesh(0.25, 0xffcc88, 'textures/saturn.jpg');
 
-  const saturnMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.25, 32, 32),
-    new THREE.MeshStandardMaterial({color: 0xffcc88})
-  );
+  const uranusMesh = createSphereMesh(0.22, 0x66bbff, 'textures/uranus.jpg');
 
-  const uranusMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.22, 32, 32),
-    new THREE.MeshStandardMaterial({color: 0x66bbff})
-  );
-
-  const neptuneMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.21, 32, 32),
-    new THREE.MeshStandardMaterial({color: 0x4477ff})
-  );
+  const neptuneMesh = createSphereMesh(0.21, 0x4477ff, 'textures/neptune.jpg');
 
   const mercuryOrbit = createOrbitLine(0.39 * SCALE);
   const venusOrbit = createOrbitLine(0.72 * SCALE);
