@@ -1,18 +1,30 @@
 import * as THREE from "three";
 import {setupScene} from './setupScene.js';
-import {parseDateTime} from './timeUtils.js';
+import {parseDateTime, advanceTime} from './timeUtils.js';
 import {createPlanetMeshes, updatePositions} from './planets.js';
 import {createEarth, createMars, createJupiter} from "astronomy-bundle/planets";
 import {createSun as createSunSolo} from "astronomy-bundle/sun";
 const container = document.body;
 const {scene, camera, renderer, controls, light} = setupScene(container);
 let toi = parseDateTime(document.getElementById('datetime').value);
+const clock = new THREE.Clock();
+let playing = false;
 
 let {objects, bodies} = createPlanetMeshes(toi);
 objects.forEach(obj => scene.add(obj));
 
-function animate() {
+async function animate() {
   requestAnimationFrame(animate);
+  if (playing) {
+    const delta = clock.getDelta();
+    toi = advanceTime(toi, delta * 86400000); // advance one day per second
+    document.getElementById('datetime').value = toi.getDate().toISOString().slice(0,16);
+    bodies.sun.astro = createSunSolo(toi);
+    bodies.earth.astro = createEarth(toi);
+    bodies.mars.astro = createMars(toi);
+    bodies.jupiter.astro = createJupiter(toi);
+    await updatePositions(bodies, toi);
+  }
   controls.update();
   renderer.render(scene, camera);
 }
@@ -55,6 +67,13 @@ lightToggle.addEventListener('change', () => {
   } else {
     document.body.classList.remove('light');
   }
+});
+
+const playBtn = document.getElementById('playTimeline');
+playBtn.addEventListener('click', () => {
+  playing = !playing;
+  playBtn.textContent = playing ? 'Pause Timeline' : 'Play Timeline';
+  clock.getDelta();
 });
 
 refresh();
