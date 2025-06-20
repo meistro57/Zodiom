@@ -71,7 +71,9 @@ export function createPlanetMeshes(toi) {
   const mercuryOrbit = createOrbitLine(0.39 * SCALE);
   const venusOrbit = createOrbitLine(0.72 * SCALE);
   const earthOrbit = createOrbitLine(1 * SCALE);
-  const moonOrbit = createOrbitLine(0.05 * SCALE);
+  // The average Earth–Moon distance is about 0.00257 AU, so use that
+  // value for the orbit line to match the moon’s actual scale.
+  const moonOrbit = createOrbitLine(0.00257 * SCALE);
   const marsOrbit = createOrbitLine(1.52 * SCALE);
   const jupiterOrbit = createOrbitLine(5.2 * SCALE);
   const saturnOrbit = createOrbitLine(9.58 * SCALE);
