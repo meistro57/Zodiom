@@ -4,8 +4,29 @@
   <meta charset="UTF-8">
   <title>Zodiom Prototype</title>
   <style>
-    body { margin: 0; overflow: hidden; font-family: sans-serif; background: radial-gradient(circle at center, #112, #000); color: #fff; }
-    body.light { background: radial-gradient(circle at center, #eef, #558); color: #000; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: sans-serif;
+      background-color: #000;
+      background-image:
+        radial-gradient(2px 2px at 20px 20px, #fff, transparent),
+        radial-gradient(1px 1px at 40px 60px, #fff, transparent),
+        radial-gradient(2px 2px at 80px 40px, #fff, transparent),
+        radial-gradient(1px 1px at 60px 80px, #fff, transparent);
+      background-size: 100px 100px;
+      color: #fff;
+    }
+    body.light {
+      background-color: #eef;
+      background-image:
+        radial-gradient(2px 2px at 20px 20px, #aaa, transparent),
+        radial-gradient(1px 1px at 40px 60px, #aaa, transparent),
+        radial-gradient(2px 2px at 80px 40px, #aaa, transparent),
+        radial-gradient(1px 1px at 60px 80px, #aaa, transparent);
+      background-size: 100px 100px;
+      color: #000;
+    }
     #ui {
       position: absolute;
       top: 10px; left: 10px;
