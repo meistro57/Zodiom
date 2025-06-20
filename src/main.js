@@ -13,6 +13,7 @@ import {
   createNeptune
 } from "astronomy-bundle/planets";
 import { createEarth } from "astronomy-bundle/earth";
+import { createMoon } from "astronomy-bundle/moon";
 import {createSun as createSunSolo} from "astronomy-bundle/sun";
 const container = document.body;
 const {scene, camera, renderer, controls, light, labelRenderer} = setupScene(container);
@@ -46,6 +47,7 @@ async function animate() {
     bodies.mercury.astro = createMercury(toi);
     bodies.venus.astro = createVenus(toi);
     bodies.earth.astro = createEarth(toi);
+    bodies.moon.astro = createMoon(toi);
     bodies.mars.astro = createMars(toi);
     bodies.jupiter.astro = createJupiter(toi);
     bodies.saturn.astro = createSaturn(toi);
@@ -65,6 +67,7 @@ async function refresh() {
   bodies.mercury.astro = createMercury(toi);
   bodies.venus.astro = createVenus(toi);
   bodies.earth.astro = createEarth(toi);
+  bodies.moon.astro = createMoon(toi);
   bodies.mars.astro = createMars(toi);
   bodies.jupiter.astro = createJupiter(toi);
   bodies.saturn.astro = createSaturn(toi);
