@@ -7,3 +7,8 @@ export function parseDateTime(value) {
   const date = new Date(value);
   return createTimeOfInterest.fromDate(date);
 }
+
+export function advanceTime(toi, deltaMs) {
+  const newDate = new Date(toi.getDate().getTime() + deltaMs);
+  return createTimeOfInterest.fromDate(newDate);
+}
