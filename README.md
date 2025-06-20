@@ -4,7 +4,7 @@ Zodiom is an in-browser 3D cosmic simulator built with Three.js and Astronomy Bu
 
 ## Features
 
-- Real-time Sun, Earth, Mars and Jupiter positions
+- Real-time positions for all major planets
 - Travel to any date in history or the future
 - Mystic Mode for a symbolic, sacred look
 - Optional light mode for the UI
@@ -36,7 +36,7 @@ npm run build
 
 ## Roadmap
 
-- Add all remaining planets and major moons
+- Add all remaining planets and major moons (completed)
 - Animated timeline for smooth time travel (completed)
 - Highlight celestial events such as eclipses and conjunctions
 - Optional VR/AR mode

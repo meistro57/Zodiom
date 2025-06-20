@@ -2,7 +2,16 @@ import * as THREE from "three";
 import {setupScene} from './setupScene.js';
 import {parseDateTime, advanceTime} from './timeUtils.js';
 import {createPlanetMeshes, updatePositions} from './planets.js';
-import {createEarth, createMars, createJupiter} from "astronomy-bundle/planets";
+import {
+  createMercury,
+  createVenus,
+  createEarth,
+  createMars,
+  createJupiter,
+  createSaturn,
+  createUranus,
+  createNeptune
+} from "astronomy-bundle/planets";
 import {createSun as createSunSolo} from "astronomy-bundle/sun";
 const container = document.body;
 const {scene, camera, renderer, controls, light} = setupScene(container);
@@ -20,9 +29,14 @@ async function animate() {
     toi = advanceTime(toi, delta * 86400000); // advance one day per second
     document.getElementById('datetime').value = toi.getDate().toISOString().slice(0,16);
     bodies.sun.astro = createSunSolo(toi);
+    bodies.mercury.astro = createMercury(toi);
+    bodies.venus.astro = createVenus(toi);
     bodies.earth.astro = createEarth(toi);
     bodies.mars.astro = createMars(toi);
     bodies.jupiter.astro = createJupiter(toi);
+    bodies.saturn.astro = createSaturn(toi);
+    bodies.uranus.astro = createUranus(toi);
+    bodies.neptune.astro = createNeptune(toi);
     await updatePositions(bodies, toi);
   }
   controls.update();
@@ -33,9 +47,14 @@ animate();
 async function refresh() {
   toi = parseDateTime(document.getElementById('datetime').value);
   bodies.sun.astro = createSunSolo(toi);
+  bodies.mercury.astro = createMercury(toi);
+  bodies.venus.astro = createVenus(toi);
   bodies.earth.astro = createEarth(toi);
   bodies.mars.astro = createMars(toi);
   bodies.jupiter.astro = createJupiter(toi);
+  bodies.saturn.astro = createSaturn(toi);
+  bodies.uranus.astro = createUranus(toi);
+  bodies.neptune.astro = createNeptune(toi);
   await updatePositions(bodies, toi);
 }
 
