@@ -24,6 +24,10 @@ npm install
 npm run build
 ```
 
+If `npm start` or `npm run serve` is run before installing dependencies, you'll
+see an `esbuild: not found` error. Always run `npm install` first to download
+all required packages.
+
 Start the development server (the bundle will be built automatically) and open `http://localhost:3000` in your browser:
 
 ```bash
