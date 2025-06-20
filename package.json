@@ -7,7 +7,9 @@
     "test": "node --test",
     "build": "browserify src/main.js -p esmify -o public/bundle.js",
     "preserve": "npm run build",
-    "serve": "node server.js"
+    "serve": "node server.js",
+    "prestart": "npm run build",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
