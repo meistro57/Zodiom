@@ -5,13 +5,13 @@ import {createPlanetMeshes, updatePositions} from './planets.js';
 import {
   createMercury,
   createVenus,
-  createEarth,
   createMars,
   createJupiter,
   createSaturn,
   createUranus,
   createNeptune
 } from "astronomy-bundle/planets";
+import { createEarth } from "astronomy-bundle/earth";
 import {createSun as createSunSolo} from "astronomy-bundle/sun";
 const container = document.body;
 const {scene, camera, renderer, controls, light} = setupScene(container);
