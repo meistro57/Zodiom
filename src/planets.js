@@ -1,18 +1,42 @@
 import * as THREE from 'three';
 import {createSun} from 'astronomy-bundle/sun';
-import {createEarth, createMars, createJupiter} from 'astronomy-bundle/planets';
+import {
+  createMercury,
+  createVenus,
+  createEarth,
+  createMars,
+  createJupiter,
+  createSaturn,
+  createUranus,
+  createNeptune
+} from 'astronomy-bundle/planets';
 
 const SCALE = 5; // scale factor for visualization
 
 export function createPlanetMeshes(toi) {
   const sun = createSun(toi);
+  const mercury = createMercury(toi);
+  const venus = createVenus(toi);
   const earth = createEarth(toi);
   const mars = createMars(toi);
   const jupiter = createJupiter(toi);
+  const saturn = createSaturn(toi);
+  const uranus = createUranus(toi);
+  const neptune = createNeptune(toi);
 
   const sunMesh = new THREE.Mesh(
     new THREE.SphereGeometry(0.5, 32, 32),
     new THREE.MeshBasicMaterial({color: 0xffff00})
+  );
+
+  const mercuryMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(0.1, 32, 32),
+    new THREE.MeshStandardMaterial({color: 0xaaaaaa})
+  );
+
+  const venusMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(0.15, 32, 32),
+    new THREE.MeshStandardMaterial({color: 0xffddaa})
   );
 
   const earthMesh = new THREE.Mesh(
@@ -30,17 +54,60 @@ export function createPlanetMeshes(toi) {
     new THREE.MeshStandardMaterial({color: 0xffaa33})
   );
 
+  const saturnMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(0.25, 32, 32),
+    new THREE.MeshStandardMaterial({color: 0xffcc88})
+  );
+
+  const uranusMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(0.22, 32, 32),
+    new THREE.MeshStandardMaterial({color: 0x66bbff})
+  );
+
+  const neptuneMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(0.21, 32, 32),
+    new THREE.MeshStandardMaterial({color: 0x4477ff})
+  );
+
+  const mercuryOrbit = createOrbitLine(0.39 * SCALE);
+  const venusOrbit = createOrbitLine(0.72 * SCALE);
   const earthOrbit = createOrbitLine(1 * SCALE);
   const marsOrbit = createOrbitLine(1.52 * SCALE);
   const jupiterOrbit = createOrbitLine(5.2 * SCALE);
+  const saturnOrbit = createOrbitLine(9.58 * SCALE);
+  const uranusOrbit = createOrbitLine(19.2 * SCALE);
+  const neptuneOrbit = createOrbitLine(30.1 * SCALE);
 
   return {
-    objects: [sunMesh, earthMesh, marsMesh, jupiterMesh, earthOrbit, marsOrbit, jupiterOrbit],
+    objects: [
+      sunMesh,
+      mercuryMesh,
+      venusMesh,
+      earthMesh,
+      marsMesh,
+      jupiterMesh,
+      saturnMesh,
+      uranusMesh,
+      neptuneMesh,
+      mercuryOrbit,
+      venusOrbit,
+      earthOrbit,
+      marsOrbit,
+      jupiterOrbit,
+      saturnOrbit,
+      uranusOrbit,
+      neptuneOrbit
+    ],
     bodies: {
       sun: {mesh: sunMesh, astro: sun},
+      mercury: {mesh: mercuryMesh, astro: mercury},
+      venus: {mesh: venusMesh, astro: venus},
       earth: {mesh: earthMesh, astro: earth},
       mars: {mesh: marsMesh, astro: mars},
       jupiter: {mesh: jupiterMesh, astro: jupiter},
+      saturn: {mesh: saturnMesh, astro: saturn},
+      uranus: {mesh: uranusMesh, astro: uranus},
+      neptune: {mesh: neptuneMesh, astro: neptune}
     }
   };
 }
@@ -66,9 +133,24 @@ export async function updatePositions(bodies, toi) {
   const earthCoords = await bodies.earth.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
   bodies.earth.mesh.position.set(earthCoords.x * SCALE, earthCoords.z * SCALE, earthCoords.y * SCALE);
 
+  const mercuryCoords = await bodies.mercury.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
+  bodies.mercury.mesh.position.set(mercuryCoords.x * SCALE, mercuryCoords.z * SCALE, mercuryCoords.y * SCALE);
+
+  const venusCoords = await bodies.venus.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
+  bodies.venus.mesh.position.set(venusCoords.x * SCALE, venusCoords.z * SCALE, venusCoords.y * SCALE);
+
   const marsCoords = await bodies.mars.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
   bodies.mars.mesh.position.set(marsCoords.x * SCALE, marsCoords.z * SCALE, marsCoords.y * SCALE);
 
   const jupiterCoords = await bodies.jupiter.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
   bodies.jupiter.mesh.position.set(jupiterCoords.x * SCALE, jupiterCoords.z * SCALE, jupiterCoords.y * SCALE);
+
+  const saturnCoords = await bodies.saturn.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
+  bodies.saturn.mesh.position.set(saturnCoords.x * SCALE, saturnCoords.z * SCALE, saturnCoords.y * SCALE);
+
+  const uranusCoords = await bodies.uranus.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
+  bodies.uranus.mesh.position.set(uranusCoords.x * SCALE, uranusCoords.z * SCALE, uranusCoords.y * SCALE);
+
+  const neptuneCoords = await bodies.neptune.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
+  bodies.neptune.mesh.position.set(neptuneCoords.x * SCALE, neptuneCoords.z * SCALE, neptuneCoords.y * SCALE);
 }
