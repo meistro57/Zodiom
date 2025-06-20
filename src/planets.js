@@ -10,6 +10,7 @@ import {
   createNeptune
 } from 'astronomy-bundle/planets';
 import { createEarth } from 'astronomy-bundle/earth';
+import { createMoon } from 'astronomy-bundle/moon';
 
 const SCALE = 5; // scale factor for visualization
 
@@ -18,6 +19,7 @@ export function createPlanetMeshes(toi) {
   const mercury = createMercury(toi);
   const venus = createVenus(toi);
   const earth = createEarth(toi);
+  const moon = createMoon(toi);
   const mars = createMars(toi);
   const jupiter = createJupiter(toi);
   const saturn = createSaturn(toi);
@@ -43,6 +45,12 @@ export function createPlanetMeshes(toi) {
     new THREE.SphereGeometry(0.2, 32, 32),
     new THREE.MeshStandardMaterial({color: 0x3366ff})
   );
+
+  const moonMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(0.05, 32, 32),
+    new THREE.MeshStandardMaterial({color: 0xdddddd})
+  );
+
 
   const marsMesh = new THREE.Mesh(
     new THREE.SphereGeometry(0.15, 32, 32),
@@ -72,11 +80,14 @@ export function createPlanetMeshes(toi) {
   const mercuryOrbit = createOrbitLine(0.39 * SCALE);
   const venusOrbit = createOrbitLine(0.72 * SCALE);
   const earthOrbit = createOrbitLine(1 * SCALE);
+  const moonOrbit = createOrbitLine(0.05 * SCALE);
   const marsOrbit = createOrbitLine(1.52 * SCALE);
   const jupiterOrbit = createOrbitLine(5.2 * SCALE);
   const saturnOrbit = createOrbitLine(9.58 * SCALE);
   const uranusOrbit = createOrbitLine(19.2 * SCALE);
   const neptuneOrbit = createOrbitLine(30.1 * SCALE);
+
+  earthMesh.add(moonOrbit);
 
   return {
     objects: [
@@ -84,6 +95,7 @@ export function createPlanetMeshes(toi) {
       mercuryMesh,
       venusMesh,
       earthMesh,
+      moonMesh,
       marsMesh,
       jupiterMesh,
       saturnMesh,
@@ -92,6 +104,7 @@ export function createPlanetMeshes(toi) {
       mercuryOrbit,
       venusOrbit,
       earthOrbit,
+      moonOrbit,
       marsOrbit,
       jupiterOrbit,
       saturnOrbit,
@@ -103,6 +116,7 @@ export function createPlanetMeshes(toi) {
       mercury: {mesh: mercuryMesh, astro: mercury},
       venus: {mesh: venusMesh, astro: venus},
       earth: {mesh: earthMesh, astro: earth},
+      moon: {mesh: moonMesh, astro: moon},
       mars: {mesh: marsMesh, astro: mars},
       jupiter: {mesh: jupiterMesh, astro: jupiter},
       saturn: {mesh: saturnMesh, astro: saturn},
@@ -132,6 +146,13 @@ export async function updatePositions(bodies, toi) {
 
   const earthCoords = await bodies.earth.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
   bodies.earth.mesh.position.set(earthCoords.x * SCALE, earthCoords.z * SCALE, earthCoords.y * SCALE);
+
+  const moonCoords = await bodies.moon.astro.getGeocentricEclipticRectangularJ2000Coordinates();
+  bodies.moon.mesh.position.set(
+    earthCoords.x * SCALE + moonCoords.x * SCALE,
+    earthCoords.z * SCALE + moonCoords.z * SCALE,
+    earthCoords.y * SCALE + moonCoords.y * SCALE
+  );
 
   const mercuryCoords = await bodies.mercury.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
   bodies.mercury.mesh.position.set(mercuryCoords.x * SCALE, mercuryCoords.z * SCALE, mercuryCoords.y * SCALE);
