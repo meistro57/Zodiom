@@ -33,6 +33,22 @@ function createSphereMesh(radius, color, texturePath, segments = 32) {
   return new THREE.Mesh(geometry, material);
 }
 
+function createAsteroidBelt(count = 1000, innerRadius = 2.2 * SCALE, outerRadius = 3.2 * SCALE) {
+  const geometry = new THREE.BufferGeometry();
+  const positions = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const r = THREE.MathUtils.lerp(innerRadius, outerRadius, Math.random());
+    const theta = Math.random() * Math.PI * 2;
+    const y = (Math.random() - 0.5) * 0.1 * SCALE;
+    positions[i * 3] = Math.cos(theta) * r;
+    positions[i * 3 + 1] = y;
+    positions[i * 3 + 2] = Math.sin(theta) * r;
+  }
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  const material = new THREE.PointsMaterial({ color: 0x888888, size: 0.03 });
+  return new THREE.Points(geometry, material);
+}
+
 export function createPlanetMeshes(toi) {
   const sun = createSun(toi);
   const mercury = createMercury(toi);
@@ -79,6 +95,7 @@ export function createPlanetMeshes(toi) {
   const saturnOrbit = createOrbitLine(9.58 * SCALE);
   const uranusOrbit = createOrbitLine(19.2 * SCALE);
   const neptuneOrbit = createOrbitLine(30.1 * SCALE);
+  const asteroidBelt = createAsteroidBelt();
 
   earthMesh.add(moonOrbit);
 
@@ -102,7 +119,8 @@ export function createPlanetMeshes(toi) {
       jupiterOrbit,
       saturnOrbit,
       uranusOrbit,
-      neptuneOrbit
+      neptuneOrbit,
+      asteroidBelt
     ],
     bodies: {
       sun: {mesh: sunMesh, astro: sun},
