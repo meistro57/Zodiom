@@ -6,6 +6,7 @@
   "scripts": {
     "test": "node --test",
     "build": "browserify src/main.js -p esmify -o public/bundle.js",
+    "preserve": "npm run build",
     "serve": "node server.js"
   },
   "keywords": [],
