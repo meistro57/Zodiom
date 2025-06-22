@@ -28,6 +28,8 @@ export function setupScene(container) {
 
   const renderer = new THREE.WebGLRenderer({antialias: true});
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   container.appendChild(renderer.domElement);
 
   const labelRenderer = new CSS2DRenderer();
@@ -45,6 +47,10 @@ export function setupScene(container) {
   scene.add(ambient);
 
   const light = new THREE.PointLight(0xffffff, 1.2);
+  light.castShadow = true;
+  light.shadow.mapSize.set(2048, 2048);
+  light.shadow.camera.near = 0.1;
+  light.shadow.camera.far = 100;
   scene.add(light);
 
   const stars = createStarfield();
