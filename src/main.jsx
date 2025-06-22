@@ -25,6 +25,13 @@ if (uiRoot) {
   root.render(<UI />);
 }
 
+// Wait for the React UI to finish mounting before initializing the scene
+if (document.getElementById('datetime')) {
+  requestAnimationFrame(init);
+} else {
+  window.addEventListener('ui-ready', () => requestAnimationFrame(init), { once: true });
+}
+
 function init() {
   const container = document.body;
   const {scene, camera, renderer, controls, light, labelRenderer} = setupScene(container);
@@ -154,6 +161,3 @@ playBtn.addEventListener('click', () => {
 
 refresh();
 }
-
-// Delay initialization slightly to ensure the React UI is mounted
-requestAnimationFrame(init);

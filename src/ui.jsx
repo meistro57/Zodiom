@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export default function UI() {
+  useEffect(() => {
+    window.dispatchEvent(new Event('ui-ready'));
+  }, []);
   return (
     <div id="ui">
       <img id="logo" src="zodiom.png" alt="Zodiom logo" />
