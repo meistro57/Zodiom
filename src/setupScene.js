@@ -2,6 +2,23 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import {CSS2DRenderer} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
+function createStarfield(count = 1000, radius = 50) {
+  const geometry = new THREE.BufferGeometry();
+  const positions = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const r = radius * Math.cbrt(Math.random());
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const sinPhi = Math.sin(phi);
+    positions[i * 3] = r * sinPhi * Math.cos(theta);
+    positions[i * 3 + 1] = r * sinPhi * Math.sin(theta);
+    positions[i * 3 + 2] = r * Math.cos(phi);
+  }
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 });
+  return new THREE.Points(geometry, material);
+}
+
 export function setupScene(container) {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x000000);
@@ -29,6 +46,9 @@ export function setupScene(container) {
 
   const light = new THREE.PointLight(0xffffff, 1.2);
   scene.add(light);
+
+  const stars = createStarfield();
+  scene.add(stars);
 
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
