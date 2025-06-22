@@ -12,6 +12,11 @@ import {
 import { createEarth } from 'astronomy-bundle/earth';
 import { createMoon } from 'astronomy-bundle/moon';
 import createPluto from './pluto.js';
+import planetElements from 'astronomia/planetelements';
+import base from 'astronomia/base';
+import { kepler2b, kepler3, trueAnomaly, radius } from 'astronomia/kepler';
+import { heliocentric as plutoHeliocentric } from 'astronomia/pluto';
+import { PlanetOrbitalPeriod } from 'astronomy-engine';
 
 const SCALE = 5; // scale factor for visualization
 // The planets are intentionally oversized for visibility. Without additional
@@ -107,20 +112,20 @@ export function createPlanetMeshes(toi) {
   const plutoMesh = createSphereMesh(0.1, 0xbbbbbb, 'textures/pluto.jpg');
   const issMesh = createCubeMesh(0.03, 0xffffff);
 
-  const mercuryOrbit = createOrbitLine(0.39 * SCALE);
-  const venusOrbit = createOrbitLine(0.72 * SCALE);
-  const earthOrbit = createOrbitLine(1 * SCALE);
+  const mercuryOrbit = createPlanetOrbitLine('mercury');
+  const venusOrbit = createPlanetOrbitLine('venus');
+  const earthOrbit = createPlanetOrbitLine('earth');
   // The average Earth–Moon distance is about 0.00257 AU. With the planets
   // enlarged for visibility we need to scale this distance up so the Moon
   // is positioned outside of the Earth mesh.
-  const moonOrbit = createOrbitLine(0.00257 * SCALE * MOON_DISTANCE_MULTIPLIER);
-  const marsOrbit = createOrbitLine(1.52 * SCALE);
-  const jupiterOrbit = createOrbitLine(5.2 * SCALE);
-  const saturnOrbit = createOrbitLine(9.58 * SCALE);
-  const uranusOrbit = createOrbitLine(19.2 * SCALE);
-  const neptuneOrbit = createOrbitLine(30.1 * SCALE);
-  const plutoOrbit = createOrbitLine(39.5 * SCALE);
-  const issOrbit = createOrbitLine(ISS_ORBIT_RADIUS);
+  const moonOrbit = createCircularOrbitLine(0.00257 * SCALE * MOON_DISTANCE_MULTIPLIER);
+  const marsOrbit = createPlanetOrbitLine('mars');
+  const jupiterOrbit = createPlanetOrbitLine('jupiter');
+  const saturnOrbit = createPlanetOrbitLine('saturn');
+  const uranusOrbit = createPlanetOrbitLine('uranus');
+  const neptuneOrbit = createPlanetOrbitLine('neptune');
+  const plutoOrbit = createPlutoOrbitLine();
+  const issOrbit = createCircularOrbitLine(ISS_ORBIT_RADIUS);
   const asteroidBelt = createAsteroidBelt();
 
   earthMesh.add(moonOrbit);
@@ -175,8 +180,81 @@ export function createPlanetMeshes(toi) {
   };
 }
 
-function createOrbitLine(radius) {
-  const segments = 64;
+const RAD = Math.PI / 180;
+
+function createEllipseLine(el, segments = 180) {
+  const geometry = new THREE.BufferGeometry();
+  const positions = new Float32Array((segments + 1) * 3);
+  const n = base.K / el.a / Math.sqrt(el.a);
+  for (let i = 0; i <= segments; i++) {
+    const M = (i / segments) * 2 * Math.PI;
+    const jd = el.epoch + M / n;
+    const { x, y, z } = heliocentricCoords(el, jd);
+    positions[i * 3] = x * SCALE;
+    positions[i * 3 + 1] = z * SCALE;
+    positions[i * 3 + 2] = y * SCALE;
+  }
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  const material = new THREE.LineBasicMaterial({ color: 0x888888 });
+  return new THREE.LineLoop(geometry, material);
+}
+
+function heliocentricCoords(el, jd) {
+  const e = el.e;
+  const a = el.a;
+  const inc = el.i * RAD;
+  const Omega = el.Omega * RAD;
+  const w = el.w * RAD;
+  const M0 = el.M0 * RAD;
+  const n = base.K / a / Math.sqrt(a);
+  const M = M0 + n * (jd - el.epoch);
+  let E;
+  try {
+    E = kepler2b(e, M, 8);
+  } catch (err) {
+    E = kepler3(e, M);
+  }
+  const nu = trueAnomaly(E, e);
+  const r = radius(E, e, a);
+  const [sO, cO] = [Math.sin(Omega), Math.cos(Omega)];
+  const [si, ci] = [Math.sin(inc), Math.cos(inc)];
+  const sE = base.SOblJ2000;
+  const cE = base.COblJ2000;
+  const F = cO;
+  const G = sO * cE;
+  const H = sO * sE;
+  const P = -sO * ci;
+  const Q = cO * ci * cE - si * sE;
+  const R = cO * ci * sE + si * cE;
+  const A = Math.atan2(F, P);
+  const B = Math.atan2(G, Q);
+  const C = Math.atan2(H, R);
+  const a1 = Math.hypot(F, P);
+  const b1 = Math.hypot(G, Q);
+  const c1 = Math.hypot(H, R);
+  const angle = w + nu;
+  const x = r * a1 * Math.sin(A + angle);
+  const y = r * b1 * Math.sin(B + angle);
+  const z = r * c1 * Math.sin(C + angle);
+  return { x, y, z };
+}
+
+function createPlanetOrbitLine(name, segments = 180) {
+  const jd0 = 2451545.0; // J2000
+  const elMean = planetElements.mean(name, jd0);
+  const elements = {
+    a: elMean.axis,
+    e: elMean.ecc,
+    i: elMean.inc * 180 / Math.PI,
+    Omega: elMean.node * 180 / Math.PI,
+    w: (elMean.peri - elMean.node) * 180 / Math.PI,
+    M0: (elMean.lon - elMean.peri) * 180 / Math.PI,
+    epoch: jd0
+  };
+  return createEllipseLine(elements, segments);
+}
+
+function createCircularOrbitLine(radius, segments = 180) {
   const geometry = new THREE.BufferGeometry();
   const points = [];
   for (let i = 0; i <= segments; i++) {
@@ -184,9 +262,28 @@ function createOrbitLine(radius) {
     points.push(new THREE.Vector3(Math.cos(theta) * radius, 0, Math.sin(theta) * radius));
   }
   geometry.setFromPoints(points);
-  const material = new THREE.LineBasicMaterial({color: 0x888888});
-  const line = new THREE.LineLoop(geometry, material);
-  return line;
+  const material = new THREE.LineBasicMaterial({ color: 0x888888 });
+  return new THREE.LineLoop(geometry, material);
+}
+
+function createPlutoOrbitLine(segments = 180) {
+  const jd0 = 2451545.0; // J2000
+  const period = PlanetOrbitalPeriod('Pluto');
+  const geometry = new THREE.BufferGeometry();
+  const positions = new Float32Array((segments + 1) * 3);
+  for (let i = 0; i <= segments; i++) {
+    const jd = jd0 + period * (i / segments);
+    const { lon, lat, range } = plutoHeliocentric(jd);
+    const x = range * Math.cos(lon) * Math.cos(lat);
+    const y = range * Math.sin(lon) * Math.cos(lat);
+    const z = range * Math.sin(lat);
+    positions[i * 3] = x * SCALE;
+    positions[i * 3 + 1] = z * SCALE;
+    positions[i * 3 + 2] = y * SCALE;
+  }
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  const material = new THREE.LineBasicMaterial({ color: 0x888888 });
+  return new THREE.LineLoop(geometry, material);
 }
 
 export async function updatePositions(bodies, toi) {
