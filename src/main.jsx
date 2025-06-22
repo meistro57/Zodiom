@@ -1,4 +1,7 @@
 import * as THREE from "three";
+import { createRoot } from 'react-dom/client';
+import React from 'react';
+import UI from './ui.jsx';
 import {setupScene} from './setupScene.js';
 import {CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import {parseDateTime, advanceTime} from './timeUtils.js';
@@ -15,19 +18,27 @@ import {
 import { createEarth } from "astronomy-bundle/earth";
 import { createMoon } from "astronomy-bundle/moon";
 import {createSun as createSunSolo} from "astronomy-bundle/sun";
-const container = document.body;
-const {scene, camera, renderer, controls, light, labelRenderer} = setupScene(container);
-let toi = parseDateTime(document.getElementById('datetime').value);
-const clock = new THREE.Clock();
-let playing = false;
-let speed = 1;
 
-let {objects, bodies} = createPlanetMeshes(toi);
-objects.forEach(obj => {
-  if (obj !== bodies.moon.mesh) {
-    scene.add(obj);
-  }
-});
+const uiRoot = document.getElementById('ui-root');
+if (uiRoot) {
+  const root = createRoot(uiRoot);
+  root.render(<UI />);
+}
+
+function init() {
+  const container = document.body;
+  const {scene, camera, renderer, controls, light, labelRenderer} = setupScene(container);
+  let toi = parseDateTime(document.getElementById('datetime').value);
+  const clock = new THREE.Clock();
+  let playing = false;
+  let speed = 1;
+
+  let {objects, bodies} = createPlanetMeshes(toi);
+  objects.forEach(obj => {
+    if (obj !== bodies.moon.mesh) {
+      scene.add(obj);
+    }
+  });
 
 const labels = [];
 for (const [name, body] of Object.entries(bodies)) {
@@ -142,3 +153,7 @@ playBtn.addEventListener('click', () => {
 });
 
 refresh();
+}
+
+// Delay initialization slightly to ensure the React UI is mounted
+requestAnimationFrame(init);

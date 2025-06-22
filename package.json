@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node --test",
-    "build": "esbuild src/main.js --bundle --outfile=public/bundle.js --format=esm",
+    "build": "esbuild src/main.jsx --bundle --outfile=public/bundle.js --format=esm",
     "preserve": "npm run build",
     "serve": "node server.js",
     "prestart": "npm run build",
@@ -18,6 +18,8 @@
   "dependencies": {
     "astronomy-bundle": "^7.7.7",
     "express": "^4.19.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "three": "^0.177.0"
   },
   "devDependencies": {
