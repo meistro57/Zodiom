@@ -11,6 +11,7 @@ import {
 } from 'astronomy-bundle/planets';
 import { createEarth } from 'astronomy-bundle/earth';
 import { createMoon } from 'astronomy-bundle/moon';
+import createPluto from './pluto.js';
 
 const SCALE = 5; // scale factor for visualization
 // The planets are intentionally oversized for visibility. Without additional
@@ -64,6 +65,7 @@ export function createPlanetMeshes(toi) {
   const saturn = createSaturn(toi);
   const uranus = createUranus(toi);
   const neptune = createNeptune(toi);
+  const pluto = createPluto(toi);
 
   const sunMesh = new THREE.Mesh(
     new THREE.SphereGeometry(0.5, 64, 64),
@@ -88,6 +90,7 @@ export function createPlanetMeshes(toi) {
   const uranusMesh = createSphereMesh(0.22, 0x66bbff, 'textures/uranus.jpg');
 
   const neptuneMesh = createSphereMesh(0.21, 0x4477ff, 'textures/neptune.jpg');
+  const plutoMesh = createSphereMesh(0.1, 0xbbbbbb, 'textures/pluto.jpg');
 
   const mercuryOrbit = createOrbitLine(0.39 * SCALE);
   const venusOrbit = createOrbitLine(0.72 * SCALE);
@@ -101,6 +104,7 @@ export function createPlanetMeshes(toi) {
   const saturnOrbit = createOrbitLine(9.58 * SCALE);
   const uranusOrbit = createOrbitLine(19.2 * SCALE);
   const neptuneOrbit = createOrbitLine(30.1 * SCALE);
+  const plutoOrbit = createOrbitLine(39.5 * SCALE);
   const asteroidBelt = createAsteroidBelt();
 
   earthMesh.add(moonOrbit);
@@ -119,6 +123,7 @@ export function createPlanetMeshes(toi) {
       saturnMesh,
       uranusMesh,
       neptuneMesh,
+      plutoMesh,
       mercuryOrbit,
       venusOrbit,
       earthOrbit,
@@ -128,6 +133,7 @@ export function createPlanetMeshes(toi) {
       saturnOrbit,
       uranusOrbit,
       neptuneOrbit,
+      plutoOrbit,
       asteroidBelt
     ],
     moonOrbit,
@@ -141,7 +147,8 @@ export function createPlanetMeshes(toi) {
       jupiter: {mesh: jupiterMesh, astro: jupiter},
       saturn: {mesh: saturnMesh, astro: saturn},
       uranus: {mesh: uranusMesh, astro: uranus},
-      neptune: {mesh: neptuneMesh, astro: neptune}
+      neptune: {mesh: neptuneMesh, astro: neptune},
+      pluto: {mesh: plutoMesh, astro: pluto}
     }
   };
 }
@@ -194,4 +201,7 @@ export async function updatePositions(bodies, toi) {
 
   const neptuneCoords = await bodies.neptune.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
   bodies.neptune.mesh.position.set(neptuneCoords.x * SCALE, neptuneCoords.z * SCALE, neptuneCoords.y * SCALE);
+
+  const plutoCoords = await bodies.pluto.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
+  bodies.pluto.mesh.position.set(plutoCoords.x * SCALE, plutoCoords.z * SCALE, plutoCoords.y * SCALE);
 }

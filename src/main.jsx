@@ -18,6 +18,7 @@ import {
 import { createEarth } from "astronomy-bundle/earth";
 import { createMoon } from "astronomy-bundle/moon";
 import {createSun as createSunSolo} from "astronomy-bundle/sun";
+import createPluto from './pluto.js';
 
 const uiRoot = document.getElementById('ui-root');
 if (uiRoot) {
@@ -75,6 +76,7 @@ async function animate() {
     bodies.saturn.astro = createSaturn(toi);
     bodies.uranus.astro = createUranus(toi);
     bodies.neptune.astro = createNeptune(toi);
+    bodies.pluto.astro = createPluto(toi);
     await updatePositions(bodies, toi);
   }
   controls.update();
@@ -95,6 +97,7 @@ async function refresh() {
   bodies.saturn.astro = createSaturn(toi);
   bodies.uranus.astro = createUranus(toi);
   bodies.neptune.astro = createNeptune(toi);
+  bodies.pluto.astro = createPluto(toi);
   await updatePositions(bodies, toi);
 }
 
