@@ -65,7 +65,26 @@ for (const [name, body] of Object.entries(bodies)) {
   body.mesh.add(label);
   labels.push(label);
 }
-const orbits = objects.filter(o => o.type === 'LineLoop');
+  const orbits = objects.filter(o => o.type === 'LineLoop');
+
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+  const bodyMeshes = Object.values(bodies).map(b => b.mesh);
+
+  renderer.domElement.addEventListener('dblclick', event => {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObjects(bodyMeshes, true);
+    if (hits.length > 0) {
+      const pos = new THREE.Vector3();
+      hits[0].object.getWorldPosition(pos);
+      controls.target.copy(pos);
+      const dir = camera.position.clone().sub(pos).normalize();
+      camera.position.copy(pos.clone().add(dir.multiplyScalar(2)));
+      controls.update();
+    }
+  });
 
 async function animate() {
   requestAnimationFrame(animate);
