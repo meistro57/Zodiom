@@ -17,6 +17,7 @@
   "type": "module",
   "dependencies": {
     "astronomy-bundle": "^7.7.7",
+    "astronomy-engine": "^2.1.19",
     "express": "^4.19.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
