@@ -40,9 +40,9 @@ function init() {
   let playing = false;
   let speed = 1;
 
-  let {objects, bodies} = createPlanetMeshes(toi);
+  let {objects, bodies, moonOrbit} = createPlanetMeshes(toi);
   objects.forEach(obj => {
-    if (obj !== bodies.moon.mesh) {
+    if (obj !== bodies.moon.mesh && obj !== moonOrbit) {
       scene.add(obj);
     }
   });

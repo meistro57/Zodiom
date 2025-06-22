@@ -13,6 +13,9 @@ import { createEarth } from 'astronomy-bundle/earth';
 import { createMoon } from 'astronomy-bundle/moon';
 
 const SCALE = 5; // scale factor for visualization
+// The planets are intentionally oversized for visibility. Without additional
+// scaling the Moon would sit inside the Earth, so enlarge its distance.
+const MOON_DISTANCE_MULTIPLIER = 25;
 
 const loader = new THREE.TextureLoader();
 
@@ -89,9 +92,10 @@ export function createPlanetMeshes(toi) {
   const mercuryOrbit = createOrbitLine(0.39 * SCALE);
   const venusOrbit = createOrbitLine(0.72 * SCALE);
   const earthOrbit = createOrbitLine(1 * SCALE);
-  // The average Earth–Moon distance is about 0.00257 AU, so use that
-  // value for the orbit line to match the moon’s actual scale.
-  const moonOrbit = createOrbitLine(0.00257 * SCALE);
+  // The average Earth–Moon distance is about 0.00257 AU. With the planets
+  // enlarged for visibility we need to scale this distance up so the Moon
+  // is positioned outside of the Earth mesh.
+  const moonOrbit = createOrbitLine(0.00257 * SCALE * MOON_DISTANCE_MULTIPLIER);
   const marsOrbit = createOrbitLine(1.52 * SCALE);
   const jupiterOrbit = createOrbitLine(5.2 * SCALE);
   const saturnOrbit = createOrbitLine(9.58 * SCALE);
@@ -126,6 +130,7 @@ export function createPlanetMeshes(toi) {
       neptuneOrbit,
       asteroidBelt
     ],
+    moonOrbit,
     bodies: {
       sun: {mesh: sunMesh, astro: sun},
       mercury: {mesh: mercuryMesh, astro: mercury},
@@ -164,9 +169,9 @@ export async function updatePositions(bodies, toi) {
 
   const moonCoords = await bodies.moon.astro.getGeocentricEclipticRectangularJ2000Coordinates();
   bodies.moon.mesh.position.set(
-    moonCoords.x * SCALE,
-    moonCoords.z * SCALE,
-    moonCoords.y * SCALE
+    moonCoords.x * SCALE * MOON_DISTANCE_MULTIPLIER,
+    moonCoords.z * SCALE * MOON_DISTANCE_MULTIPLIER,
+    moonCoords.y * SCALE * MOON_DISTANCE_MULTIPLIER
   );
 
   const mercuryCoords = await bodies.mercury.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
