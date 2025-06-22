@@ -6,6 +6,7 @@ import {setupScene} from './setupScene.js';
 import {CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import {parseDateTime, advanceTime} from './timeUtils.js';
 import {createPlanetMeshes, updatePositions} from './planets.js';
+import {createSmallBodyMeshes, updateSmallBodyPositions} from './smallBodies.js';
 import {
   createMercury,
   createVenus,
@@ -42,6 +43,12 @@ function init() {
   let speed = 1;
 
   let {objects, bodies, moonOrbit, issOrbit} = createPlanetMeshes(toi);
+  let smallBodies;
+  const result = createSmallBodyMeshes(toi);
+  const sbObjects = result.objects;
+  smallBodies = result.bodies;
+  objects = objects.concat(sbObjects);
+  Object.assign(bodies, smallBodies);
   objects.forEach(obj => {
     if (obj !== bodies.moon.mesh && obj !== moonOrbit && obj !== bodies.iss.mesh && obj !== issOrbit) {
       scene.add(obj);
@@ -78,6 +85,7 @@ async function animate() {
     bodies.neptune.astro = createNeptune(toi);
     bodies.pluto.astro = createPluto(toi);
     await updatePositions(bodies, toi);
+    updateSmallBodyPositions(smallBodies, toi);
   }
   controls.update();
   renderer.render(scene, camera);
@@ -99,6 +107,7 @@ async function refresh() {
   bodies.neptune.astro = createNeptune(toi);
   bodies.pluto.astro = createPluto(toi);
   await updatePositions(bodies, toi);
+  updateSmallBodyPositions(smallBodies, toi);
 }
 
 document.getElementById('go').addEventListener('click', () => {
