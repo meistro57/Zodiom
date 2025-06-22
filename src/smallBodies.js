@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import base from 'astronomia/base.js';
-import { kepler2b, kepler3, trueAnomaly, radius } from 'astronomia/kepler.js';
+import base from 'astronomia/base';
+import { kepler2b, kepler3, trueAnomaly, radius } from 'astronomia/kepler';
 
 const SCALE = 5;
 const RAD = Math.PI / 180;
