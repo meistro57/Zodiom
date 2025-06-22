@@ -84,7 +84,8 @@ export function createPlanetMeshes(toi) {
 
   const venusMesh = createSphereMesh(0.15, 0xffddaa, 'textures/venus.jpg');
 
-  const earthMesh = createSphereMesh(0.2, 0x3366ff, 'textures/earth.jpg');
+  // Use a white base color so the texture appears unmodified
+  const earthMesh = createSphereMesh(0.2, 0xffffff, 'textures/earth.jpg');
 
   // Slightly higher detail for the moon
   const moonMesh = createSphereMesh(0.05, 0xdddddd, 'textures/moon.jpg', 96);
