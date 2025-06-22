@@ -16,9 +16,9 @@ import createPluto from './pluto.js';
 const SCALE = 5; // scale factor for visualization
 // The planets are intentionally oversized for visibility. Without additional
 // scaling the Moon would sit inside the Earth, so enlarge its distance.
-const MOON_DISTANCE_MULTIPLIER = 30;
+const MOON_DISTANCE_MULTIPLIER = 50; // increased separation from Earth
 
-const ISS_ORBIT_RADIUS = 0.21; // approximate distance from Earth's center
+const ISS_ORBIT_RADIUS = 0.3; // increased distance from Earth's center
 
 const loader = new THREE.TextureLoader();
 

@@ -15,9 +15,10 @@ Zodiom is an in-browser 3D cosmic simulator built with Three.js and Astronomy Bu
 - Visual asteroid belt between Mars and Jupiter
 - Orbits for known asteroids and comets
 - Watch the International Space Station orbit the Earth
-- Enhanced Moon distance for better visibility
+- Increased Moon and ISS distance from Earth for improved visibility
 - Adjustable timeline speed
 - Reset camera position with one click
+- Expanded starfield backdrop
 
 ## Getting Started
 
