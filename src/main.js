@@ -23,7 +23,11 @@ let playing = false;
 let speed = 1;
 
 let {objects, bodies} = createPlanetMeshes(toi);
-objects.forEach(obj => scene.add(obj));
+objects.forEach(obj => {
+  if (obj !== bodies.moon.mesh) {
+    scene.add(obj);
+  }
+});
 
 const labels = [];
 for (const [name, body] of Object.entries(bodies)) {

@@ -16,7 +16,8 @@ const SCALE = 5; // scale factor for visualization
 
 const loader = new THREE.TextureLoader();
 
-function createSphereMesh(radius, color, texturePath, segments = 32) {
+// Use more segments for smoother looking spheres
+function createSphereMesh(radius, color, texturePath, segments = 64) {
   const geometry = new THREE.SphereGeometry(radius, segments, segments);
   const material = new THREE.MeshStandardMaterial({color});
   loader.load(
@@ -62,7 +63,7 @@ export function createPlanetMeshes(toi) {
   const neptune = createNeptune(toi);
 
   const sunMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.5, 32, 32),
+    new THREE.SphereGeometry(0.5, 64, 64),
     new THREE.MeshBasicMaterial({color: 0xffff00})
   );
 
@@ -72,7 +73,8 @@ export function createPlanetMeshes(toi) {
 
   const earthMesh = createSphereMesh(0.2, 0x3366ff, 'textures/earth.jpg');
 
-  const moonMesh = createSphereMesh(0.05, 0xdddddd, 'textures/moon.jpg', 64);
+  // Slightly higher detail for the moon
+  const moonMesh = createSphereMesh(0.05, 0xdddddd, 'textures/moon.jpg', 96);
 
   const marsMesh = createSphereMesh(0.15, 0xff5533, 'textures/mars.jpg');
 
@@ -98,6 +100,8 @@ export function createPlanetMeshes(toi) {
   const asteroidBelt = createAsteroidBelt();
 
   earthMesh.add(moonOrbit);
+  // Parent the moon to the earth so it orbits correctly
+  earthMesh.add(moonMesh);
 
   return {
     objects: [
@@ -160,9 +164,9 @@ export async function updatePositions(bodies, toi) {
 
   const moonCoords = await bodies.moon.astro.getGeocentricEclipticRectangularJ2000Coordinates();
   bodies.moon.mesh.position.set(
-    earthCoords.x * SCALE + moonCoords.x * SCALE,
-    earthCoords.z * SCALE + moonCoords.z * SCALE,
-    earthCoords.y * SCALE + moonCoords.y * SCALE
+    moonCoords.x * SCALE,
+    moonCoords.z * SCALE,
+    moonCoords.y * SCALE
   );
 
   const mercuryCoords = await bodies.mercury.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
