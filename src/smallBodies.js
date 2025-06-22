@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import base from 'astronomia/base';
 import { kepler2b, kepler3, trueAnomaly, radius } from 'astronomia/kepler';
+import { Body, StateVector, GravitySimulator } from 'astronomy-engine';
 
 const SCALE = 5;
 const RAD = Math.PI / 180;
@@ -83,15 +84,73 @@ function createEllipseLine(el, segments = 180) {
   return new THREE.LineLoop(geometry, material);
 }
 
+function stateVectorFromElements(el, jd) {
+  const e = el.e;
+  const a = el.a;
+  const inc = el.i * RAD;
+  const Omega = el.Omega * RAD;
+  const w = el.w * RAD;
+  const M0 = el.M0 * RAD;
+  const n = base.K / a / Math.sqrt(a);
+  const M = M0 + n * (jd - el.epoch);
+  let E;
+  try {
+    E = kepler2b(e, M, 8);
+  } catch (err) {
+    E = kepler3(e, M);
+  }
+  const cosE = Math.cos(E);
+  const sinE = Math.sin(E);
+  const r = a * (1 - e * cosE);
+  const xOrb = a * (cosE - e);
+  const yOrb = a * Math.sqrt(1 - e * e) * sinE;
+  const xdotOrb = -a * n * sinE / (1 - e * cosE);
+  const ydotOrb = a * n * Math.sqrt(1 - e * e) * cosE / (1 - e * cosE);
+
+  const cosO = Math.cos(Omega);
+  const sinO = Math.sin(Omega);
+  const cosi = Math.cos(inc);
+  const sini = Math.sin(inc);
+  const cosw = Math.cos(w);
+  const sinw = Math.sin(w);
+
+  const xEcl = cosO * (cosw * xOrb - sinw * yOrb) - sinO * (sinw * xOrb + cosw * yOrb) * cosi;
+  const yEcl = sinO * (cosw * xOrb - sinw * yOrb) + cosO * (sinw * xOrb + cosw * yOrb) * cosi;
+  const zEcl = (sinw * xOrb + cosw * yOrb) * sini;
+
+  const vxEcl = cosO * (cosw * xdotOrb - sinw * ydotOrb) - sinO * (sinw * xdotOrb + cosw * ydotOrb) * cosi;
+  const vyEcl = sinO * (cosw * xdotOrb - sinw * ydotOrb) + cosO * (sinw * xdotOrb + cosw * ydotOrb) * cosi;
+  const vzEcl = (sinw * xdotOrb + cosw * ydotOrb) * sini;
+
+  const sE = base.SOblJ2000;
+  const cE = base.COblJ2000;
+
+  const x = xEcl;
+  const y = cE * yEcl - sE * zEcl;
+  const z = sE * yEcl + cE * zEcl;
+
+  const vx = vxEcl;
+  const vy = cE * vyEcl - sE * vzEcl;
+  const vz = sE * vyEcl + cE * vzEcl;
+
+  return { x, y, z, vx, vy, vz };
+}
+
 export function createSmallBodyMeshes(toi) {
   const bodies = {};
   const objects = [];
+  const states = [];
   for (const body of SMALL_BODIES) {
     const mesh = createSphereMesh(0.05, body.color);
     const orbit = createEllipseLine(body.elements);
     objects.push(mesh, orbit);
-    bodies[body.name.toLowerCase()] = { mesh, elements: body.elements };
+    const name = body.name.toLowerCase();
+    bodies[name] = { mesh, elements: body.elements };
+    const sv = stateVectorFromElements(body.elements, toi.getJulianDay());
+    states.push(new StateVector(sv.x, sv.y, sv.z, sv.vx, sv.vy, sv.vz, toi.getDate()));
+    bodies[name].index = states.length - 1;
   }
+  bodies._sim = new GravitySimulator(Body.Sun, toi.getDate(), states);
   updateSmallBodyPositions(bodies, toi);
   return { objects, bodies };
 }
@@ -137,10 +196,14 @@ function heliocentricCoords(el, jd) {
 }
 
 export function updateSmallBodyPositions(bodies, toi) {
-  const jd = toi.getJulianDay();
-  for (const key in bodies) {
-    const { mesh, elements } = bodies[key];
-    const { x, y, z } = heliocentricCoords(elements, jd);
-    mesh.position.set(x * SCALE, z * SCALE, y * SCALE);
+  if (!bodies._sim) {
+    return;
+  }
+  const states = bodies._sim.Update(toi.getDate());
+  for (const key of Object.keys(bodies)) {
+    if (key === '_sim') continue;
+    const body = bodies[key];
+    const sv = states[body.index];
+    body.mesh.position.set(sv.x * SCALE, sv.z * SCALE, sv.y * SCALE);
   }
 }
