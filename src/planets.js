@@ -16,7 +16,9 @@ import createPluto from './pluto.js';
 const SCALE = 5; // scale factor for visualization
 // The planets are intentionally oversized for visibility. Without additional
 // scaling the Moon would sit inside the Earth, so enlarge its distance.
-const MOON_DISTANCE_MULTIPLIER = 25;
+const MOON_DISTANCE_MULTIPLIER = 30;
+
+const ISS_ORBIT_RADIUS = 0.21; // approximate distance from Earth's center
 
 const loader = new THREE.TextureLoader();
 
@@ -35,6 +37,12 @@ function createSphereMesh(radius, color, texturePath, segments = 64) {
       // ignore loading errors and keep fallback color
     }
   );
+  return new THREE.Mesh(geometry, material);
+}
+
+function createCubeMesh(size, color) {
+  const geometry = new THREE.BoxGeometry(size, size, size);
+  const material = new THREE.MeshStandardMaterial({ color });
   return new THREE.Mesh(geometry, material);
 }
 
@@ -91,6 +99,7 @@ export function createPlanetMeshes(toi) {
 
   const neptuneMesh = createSphereMesh(0.21, 0x4477ff, 'textures/neptune.jpg');
   const plutoMesh = createSphereMesh(0.1, 0xbbbbbb, 'textures/pluto.jpg');
+  const issMesh = createCubeMesh(0.03, 0xffffff);
 
   const mercuryOrbit = createOrbitLine(0.39 * SCALE);
   const venusOrbit = createOrbitLine(0.72 * SCALE);
@@ -105,11 +114,14 @@ export function createPlanetMeshes(toi) {
   const uranusOrbit = createOrbitLine(19.2 * SCALE);
   const neptuneOrbit = createOrbitLine(30.1 * SCALE);
   const plutoOrbit = createOrbitLine(39.5 * SCALE);
+  const issOrbit = createOrbitLine(ISS_ORBIT_RADIUS);
   const asteroidBelt = createAsteroidBelt();
 
   earthMesh.add(moonOrbit);
-  // Parent the moon to the earth so it orbits correctly
+  earthMesh.add(issOrbit);
+  // Parent the moon and ISS to the earth so they orbit correctly
   earthMesh.add(moonMesh);
+  earthMesh.add(issMesh);
 
   return {
     objects: [
@@ -124,10 +136,12 @@ export function createPlanetMeshes(toi) {
       uranusMesh,
       neptuneMesh,
       plutoMesh,
+      issMesh,
       mercuryOrbit,
       venusOrbit,
       earthOrbit,
       moonOrbit,
+      issOrbit,
       marsOrbit,
       jupiterOrbit,
       saturnOrbit,
@@ -137,6 +151,7 @@ export function createPlanetMeshes(toi) {
       asteroidBelt
     ],
     moonOrbit,
+    issOrbit,
     bodies: {
       sun: {mesh: sunMesh, astro: sun},
       mercury: {mesh: mercuryMesh, astro: mercury},
@@ -148,7 +163,8 @@ export function createPlanetMeshes(toi) {
       saturn: {mesh: saturnMesh, astro: saturn},
       uranus: {mesh: uranusMesh, astro: uranus},
       neptune: {mesh: neptuneMesh, astro: neptune},
-      pluto: {mesh: plutoMesh, astro: pluto}
+      pluto: {mesh: plutoMesh, astro: pluto},
+      iss: {mesh: issMesh, astro: null}
     }
   };
 }
@@ -204,4 +220,14 @@ export async function updatePositions(bodies, toi) {
 
   const plutoCoords = await bodies.pluto.astro.getHeliocentricEclipticRectangularJ2000Coordinates();
   bodies.pluto.mesh.position.set(plutoCoords.x * SCALE, plutoCoords.z * SCALE, plutoCoords.y * SCALE);
+
+  // Simple circular orbit for the ISS around Earth
+  const t = (toi.getDate ? toi.getDate() : toi).getTime() / 1000;
+  const period = 92 * 60; // seconds
+  const angle = (t % period) / period * Math.PI * 2;
+  bodies.iss.mesh.position.set(
+    Math.cos(angle) * ISS_ORBIT_RADIUS,
+    0,
+    Math.sin(angle) * ISS_ORBIT_RADIUS
+  );
 }

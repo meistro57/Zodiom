@@ -41,9 +41,9 @@ function init() {
   let playing = false;
   let speed = 1;
 
-  let {objects, bodies, moonOrbit} = createPlanetMeshes(toi);
+  let {objects, bodies, moonOrbit, issOrbit} = createPlanetMeshes(toi);
   objects.forEach(obj => {
-    if (obj !== bodies.moon.mesh && obj !== moonOrbit) {
+    if (obj !== bodies.moon.mesh && obj !== moonOrbit && obj !== bodies.iss.mesh && obj !== issOrbit) {
       scene.add(obj);
     }
   });
