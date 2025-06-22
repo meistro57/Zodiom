@@ -23,7 +23,7 @@ const ISS_ORBIT_RADIUS = 0.3; // increased distance from Earth's center
 const loader = new THREE.TextureLoader();
 
 // Use more segments for smoother looking spheres
-function createSphereMesh(radius, color, texturePath, segments = 64) {
+function createSphereMesh(radius, color, texturePath, segments = 64, receiveShadow = false) {
   const geometry = new THREE.SphereGeometry(radius, segments, segments);
   const material = new THREE.MeshStandardMaterial({color});
   loader.load(
@@ -37,13 +37,18 @@ function createSphereMesh(radius, color, texturePath, segments = 64) {
       // ignore loading errors and keep fallback color
     }
   );
-  return new THREE.Mesh(geometry, material);
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.castShadow = true;
+  mesh.receiveShadow = receiveShadow;
+  return mesh;
 }
 
 function createCubeMesh(size, color) {
   const geometry = new THREE.BoxGeometry(size, size, size);
   const material = new THREE.MeshStandardMaterial({ color });
-  return new THREE.Mesh(geometry, material);
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.castShadow = true;
+  return mesh;
 }
 
 function createAsteroidBelt(count = 1000, innerRadius = 2.2 * SCALE, outerRadius = 3.2 * SCALE) {
@@ -85,7 +90,7 @@ export function createPlanetMeshes(toi) {
   const venusMesh = createSphereMesh(0.15, 0xffddaa, 'textures/venus.jpg');
 
   // Use a white base color so the texture appears unmodified
-  const earthMesh = createSphereMesh(0.2, 0xffffff, 'textures/earth.jpg');
+  const earthMesh = createSphereMesh(0.2, 0xffffff, 'textures/earth.jpg', 64, true);
 
   // Slightly higher detail for the moon
   const moonMesh = createSphereMesh(0.05, 0xdddddd, 'textures/moon.jpg', 96);
