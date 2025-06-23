@@ -26,6 +26,7 @@ const MOON_DISTANCE_MULTIPLIER = 50; // increased separation from Earth
 const ISS_ORBIT_RADIUS = 0.3; // increased distance from Earth's center
 
 const loader = new THREE.TextureLoader();
+loader.setCrossOrigin('anonymous');
 
 // Use more segments for smoother looking spheres
 function createSphereMesh(radius, color, texturePath, segments = 64, receiveShadow = false) {
@@ -55,6 +56,31 @@ function createCubeMesh(size, color) {
   const material = new THREE.MeshStandardMaterial({ color });
   const mesh = new THREE.Mesh(geometry, material);
   mesh.castShadow = true;
+  return mesh;
+}
+
+function createRingMesh(innerRadius, outerRadius, texturePath, segments = 64) {
+  const geometry = new THREE.RingGeometry(innerRadius, outerRadius, segments);
+  // Double side so texture is visible from above and below
+  const material = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    side: THREE.DoubleSide,
+    transparent: true
+  });
+  loader.load(
+    texturePath,
+    tex => {
+      material.map = tex;
+      material.needsUpdate = true;
+    },
+    undefined,
+    () => {}
+  );
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.castShadow = false;
+  mesh.receiveShadow = false;
+  // Orient the ring around the equatorial plane
+  mesh.rotation.x = Math.PI / 2;
   return mesh;
 }
 
@@ -106,6 +132,8 @@ export function createPlanetMeshes(toi) {
   const jupiterMesh = createSphereMesh(0.3, 0xffaa33, 'textures/jupiter.jpg');
 
   const saturnMesh = createSphereMesh(0.25, 0xffcc88, 'textures/saturn.jpg');
+  const saturnRing = createRingMesh(0.35, 0.55, 'textures/saturn_ring.png');
+  saturnMesh.add(saturnRing);
 
   const uranusMesh = createSphereMesh(0.22, 0x66bbff, 'textures/uranus.jpg');
 
