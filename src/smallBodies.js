@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import base from 'astronomia/base';
 import { kepler2b, kepler3, trueAnomaly, radius } from 'astronomia/kepler';
-import { Body, StateVector, GravitySimulator } from 'astronomy-engine';
+import { Body, StateVector, GravitySimulator, AstroTime } from 'astronomy-engine';
 
 const SCALE = 5;
 const RAD = Math.PI / 180;
@@ -140,6 +140,7 @@ export function createSmallBodyMeshes(toi) {
   const bodies = {};
   const objects = [];
   const states = [];
+  const astroTime = new AstroTime(toi.getDate());
   for (const body of SMALL_BODIES) {
     const mesh = createSphereMesh(0.05, body.color);
     const orbit = createEllipseLine(body.elements);
@@ -147,10 +148,10 @@ export function createSmallBodyMeshes(toi) {
     const name = body.name.toLowerCase();
     bodies[name] = { mesh, elements: body.elements };
     const sv = stateVectorFromElements(body.elements, toi.getJulianDay());
-    states.push(new StateVector(sv.x, sv.y, sv.z, sv.vx, sv.vy, sv.vz, toi.getDate()));
+    states.push(new StateVector(sv.x, sv.y, sv.z, sv.vx, sv.vy, sv.vz, astroTime));
     bodies[name].index = states.length - 1;
   }
-  bodies._sim = new GravitySimulator(Body.Sun, toi.getDate(), states);
+  bodies._sim = new GravitySimulator(Body.Sun, astroTime, states);
   updateSmallBodyPositions(bodies, toi);
   return { objects, bodies };
 }
