@@ -271,12 +271,13 @@ function heliocentricCoords(el, jd) {
 function createPlanetOrbitLine(name, segments = 180) {
   const jd0 = 2451545.0; // J2000
   const elMean = planetElements.mean(name, jd0);
+  const node = isNaN(elMean.node) ? 0 : elMean.node;
   const elements = {
     a: elMean.axis,
     e: elMean.ecc,
     i: elMean.inc * 180 / Math.PI,
-    Omega: elMean.node * 180 / Math.PI,
-    w: (elMean.peri - elMean.node) * 180 / Math.PI,
+    Omega: node * 180 / Math.PI,
+    w: (elMean.peri - node) * 180 / Math.PI,
     M0: (elMean.lon - elMean.peri) * 180 / Math.PI,
     epoch: jd0
   };
