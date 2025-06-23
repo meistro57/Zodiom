@@ -57,6 +57,7 @@ function init() {
 
 const labels = [];
 for (const [name, body] of Object.entries(bodies)) {
+  if (!body.mesh) continue; // skip helper properties like _sim
   const div = document.createElement('div');
   div.className = 'label';
   div.textContent = name.charAt(0).toUpperCase() + name.slice(1);
@@ -69,7 +70,9 @@ for (const [name, body] of Object.entries(bodies)) {
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
-  const bodyMeshes = Object.values(bodies).map(b => b.mesh);
+  const bodyMeshes = Object.values(bodies)
+    .filter(b => b.mesh)
+    .map(b => b.mesh);
 
   renderer.domElement.addEventListener('dblclick', event => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
