@@ -28,6 +28,10 @@ export default function UI() {
         <input type="checkbox" id="orbitToggle" defaultChecked />
       </label>
       <label>
+        Show ISS
+        <input type="checkbox" id="issToggle" defaultChecked />
+      </label>
+      <label>
         Speed
         <input type="range" id="speedRange" min="0.1" max="5" step="0.1" defaultValue="1" />
       </label>

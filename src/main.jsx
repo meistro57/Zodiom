@@ -168,11 +168,20 @@ labelToggle.addEventListener('change', () => {
 });
 labels.forEach(l => l.visible = labelToggle.checked);
 
+const issToggle = document.getElementById('issToggle');
+issToggle.addEventListener('change', () => {
+  bodies.iss.mesh.visible = issToggle.checked;
+  issOrbit.visible = issToggle.checked && orbitToggle.checked;
+});
+
 const orbitToggle = document.getElementById('orbitToggle');
 orbitToggle.addEventListener('change', () => {
   orbits.forEach(o => o.visible = orbitToggle.checked);
+  if (!issToggle.checked) issOrbit.visible = false;
 });
 orbits.forEach(o => o.visible = orbitToggle.checked);
+if (!issToggle.checked) issOrbit.visible = false;
+bodies.iss.mesh.visible = issToggle.checked;
 
 const speedRange = document.getElementById('speedRange');
 speedRange.addEventListener('input', () => {
