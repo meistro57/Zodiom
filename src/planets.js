@@ -87,10 +87,9 @@ export function createPlanetMeshes(toi) {
   const neptune = createNeptune(toi);
   const pluto = createPluto(toi);
 
-  const sunMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.5, 64, 64),
-    new THREE.MeshBasicMaterial({color: 0xffff00})
-  );
+  const sunMesh = createSphereMesh(0.5, 0xffff00, 'textures/sun.jpg');
+  sunMesh.material.emissive = new THREE.Color(0xffffff);
+  sunMesh.material.emissiveIntensity = 1;
 
   const mercuryMesh = createSphereMesh(0.1, 0xaaaaaa, 'textures/mercury.jpg');
 
