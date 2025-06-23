@@ -245,26 +245,16 @@ function heliocentricCoords(el, jd) {
   }
   const nu = trueAnomaly(E, e);
   const r = radius(E, e, a);
-  const [sO, cO] = [Math.sin(Omega), Math.cos(Omega)];
-  const [si, ci] = [Math.sin(inc), Math.cos(inc)];
-  const sE = base.SOblJ2000;
-  const cE = base.COblJ2000;
-  const F = cO;
-  const G = sO * cE;
-  const H = sO * sE;
-  const P = -sO * ci;
-  const Q = cO * ci * cE - si * sE;
-  const R = cO * ci * sE + si * cE;
-  const A = Math.atan2(F, P);
-  const B = Math.atan2(G, Q);
-  const C = Math.atan2(H, R);
-  const a1 = Math.hypot(F, P);
-  const b1 = Math.hypot(G, Q);
-  const c1 = Math.hypot(H, R);
-  const angle = w + nu;
-  const x = r * a1 * Math.sin(A + angle);
-  const y = r * b1 * Math.sin(B + angle);
-  const z = r * c1 * Math.sin(C + angle);
+  const theta = nu + w;
+  const cosTheta = Math.cos(theta);
+  const sinTheta = Math.sin(theta);
+  const cosO = Math.cos(Omega);
+  const sinO = Math.sin(Omega);
+  const cosI = Math.cos(inc);
+  const sinI = Math.sin(inc);
+  const x = r * (cosO * cosTheta - sinO * sinTheta * cosI);
+  const y = r * (sinO * cosTheta + cosO * sinTheta * cosI);
+  const z = r * (sinTheta * sinI);
   return { x, y, z };
 }
 
