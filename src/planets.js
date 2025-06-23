@@ -35,6 +35,8 @@ function createSphereMesh(radius, color, texturePath, segments = 64, receiveShad
     texturePath,
     tex => {
       material.map = tex;
+      // Remove tint so the texture's true colors show
+      material.color.set(0xffffff);
       material.needsUpdate = true;
     },
     undefined,
