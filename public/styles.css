@@ -1,0 +1,70 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #000;
+  background-image:
+    radial-gradient(2px 2px at 20px 20px, #fff, transparent),
+    radial-gradient(1px 1px at 40px 60px, #fff, transparent),
+    radial-gradient(2px 2px at 80px 40px, #fff, transparent),
+    radial-gradient(1px 1px at 60px 80px, #fff, transparent);
+  background-size: 100px 100px;
+  color: #fff;
+}
+
+body.light {
+  background-color: #eef;
+  background-image:
+    radial-gradient(2px 2px at 20px 20px, #aaa, transparent),
+    radial-gradient(1px 1px at 40px 60px, #aaa, transparent),
+    radial-gradient(2px 2px at 80px 40px, #aaa, transparent),
+    radial-gradient(1px 1px at 60px 80px, #aaa, transparent);
+  background-size: 100px 100px;
+  color: #000;
+}
+
+#ui {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 260px;
+}
+
+body.light #ui {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+#logo {
+  width: 100%;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+canvas {
+  display: block;
+}
+
+.label {
+  font-size: 12px;
+  pointer-events: none;
+  text-shadow: 0 0 5px #000;
+}
