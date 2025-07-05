@@ -3,51 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Zodiom Prototype</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      font-family: sans-serif;
-      background-color: #000;
-      background-image:
-        radial-gradient(2px 2px at 20px 20px, #fff, transparent),
-        radial-gradient(1px 1px at 40px 60px, #fff, transparent),
-        radial-gradient(2px 2px at 80px 40px, #fff, transparent),
-        radial-gradient(1px 1px at 60px 80px, #fff, transparent);
-      background-size: 100px 100px;
-      color: #fff;
-    }
-    body.light {
-      background-color: #eef;
-      background-image:
-        radial-gradient(2px 2px at 20px 20px, #aaa, transparent),
-        radial-gradient(1px 1px at 40px 60px, #aaa, transparent),
-        radial-gradient(2px 2px at 80px 40px, #aaa, transparent),
-        radial-gradient(1px 1px at 60px 80px, #aaa, transparent);
-      background-size: 100px 100px;
-      color: #000;
-    }
-    #ui {
-      position: absolute;
-      top: 10px; left: 10px;
-      background: rgba(0,0,0,0.6);
-      padding: 10px;
-      border-radius: 8px;
-    }
-    #logo {
-      width: 120px;
-      display: block;
-      margin-bottom: 10px;
-    }
-    body.light #ui { background: rgba(255,255,255,0.8); }
-    canvas { display: block; }
-    label { margin-right: 8px; }
-    .label {
-      font-size: 12px;
-      pointer-events: none;
-      text-shadow: 0 0 5px #000;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div id="ui-root"></div>

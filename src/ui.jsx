@@ -7,36 +7,38 @@ export default function UI() {
   return (
     <div id="ui">
       <img id="logo" src="zodiom.png" alt="Zodiom logo" />
-      <label>Date &amp; Time:
-        <input type="datetime-local" id="datetime" />
-      </label>
-      <button id="go">Go</button>
-      <label>
+      <div className="control">
+        <label>Date &amp; Time:
+          <input type="datetime-local" id="datetime" />
+        </label>
+        <button id="go">Go</button>
+      </div>
+      <label className="control">
         Mystic Mode
         <input type="checkbox" id="mysticToggle" />
       </label>
-      <label>
+      <label className="control">
         Light Mode
         <input type="checkbox" id="lightToggle" />
       </label>
-      <label>
+      <label className="control">
         Show Labels
         <input type="checkbox" id="labelToggle" defaultChecked />
       </label>
-      <label>
+      <label className="control">
         Show Orbits
         <input type="checkbox" id="orbitToggle" defaultChecked />
       </label>
-      <label>
+      <label className="control">
         Show ISS
         <input type="checkbox" id="issToggle" defaultChecked />
       </label>
-      <label>
+      <label className="control">
         Speed
         <input type="range" id="speedRange" min="0.1" max="5" step="0.1" defaultValue="1" />
       </label>
-      <button id="playTimeline">Play Timeline</button>
-      <button id="resetCamera">Reset Camera</button>
+      <button id="playTimeline" className="control">Play Timeline</button>
+      <button id="resetCamera" className="control">Reset Camera</button>
     </div>
   );
 }
