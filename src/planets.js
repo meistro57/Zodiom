@@ -29,13 +29,26 @@ const loader = new THREE.TextureLoader();
 loader.setCrossOrigin('anonymous');
 
 // Use more segments for smoother looking spheres
-function createSphereMesh(radius, color, texturePath, segments = 64, receiveShadow = false) {
+function createSphereMesh(
+  radius,
+  color,
+  texturePath,
+  segments = 64,
+  receiveShadow = false,
+  options = {}
+) {
+  const { useEmissiveMap = false, emissiveIntensity = 1 } = options;
   const geometry = new THREE.SphereGeometry(radius, segments, segments);
-  const material = new THREE.MeshStandardMaterial({color});
+  const material = new THREE.MeshStandardMaterial({ color });
   loader.load(
     texturePath,
     tex => {
       material.map = tex;
+      if (useEmissiveMap) {
+        material.emissiveMap = tex;
+        material.emissive = new THREE.Color(0xffffff);
+        material.emissiveIntensity = emissiveIntensity;
+      }
       // Remove tint so the texture's true colors show
       material.color.set(0xffffff);
       material.needsUpdate = true;
@@ -113,9 +126,14 @@ export function createPlanetMeshes(toi) {
   const neptune = createNeptune(toi);
   const pluto = createPluto(toi);
 
-  const sunMesh = createSphereMesh(0.5, 0xffff00, 'textures/sun.jpg');
-  sunMesh.material.emissive = new THREE.Color(0xffffff);
-  sunMesh.material.emissiveIntensity = 1;
+  const sunMesh = createSphereMesh(
+    0.5,
+    0xffff00,
+    'textures/sun.jpg',
+    64,
+    false,
+    { useEmissiveMap: true, emissiveIntensity: 1.5 }
+  );
 
   const mercuryMesh = createSphereMesh(0.1, 0xaaaaaa, 'textures/mercury.jpg');
 
