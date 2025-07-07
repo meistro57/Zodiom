@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "node --test",
-    "build": "esbuild src/main.jsx --bundle --outfile=public/bundle.js --format=esm",
-    "preserve": "npm run build",
+    "bundle": "esbuild src/main.jsx --bundle --outfile=public/bundle.js --format=esm",
+    "build": "npm run bundle && astro build",
+    "dev": "astro dev",
     "serve": "node server.js",
     "prestart": "npm run build",
     "start": "node server.js"
@@ -16,15 +17,21 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "astronomia": "^4.1.1",
     "astronomy-bundle": "^7.7.7",
     "astronomy-engine": "^2.1.19",
     "express": "^4.19.2",
+    "framer-motion": "^11.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "three": "^0.177.0",
-    "astronomia": "^4.1.1"
+    "three": "^0.177.0"
   },
   "devDependencies": {
-    "esbuild": "^0.25.5"
+    "@astrojs/react": "^3.4.0",
+    "astro": "^3.4.0",
+    "autoprefixer": "^10.4.17",
+    "esbuild": "^0.25.5",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.4.1"
   }
 }

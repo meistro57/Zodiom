@@ -25,18 +25,18 @@ Zodiom is an in-browser 3D cosmic simulator built with Three.js and Astronomy Bu
 
 ## Getting Started
 
-Install dependencies and then start the development server (the bundle is built automatically):
+Install dependencies and start the Astro development server (the Three.js bundle is built automatically):
 
 ```bash
 npm install
-npm start
+npm run dev
 ```
 
-If `npm start` or `npm run serve` is run before installing dependencies, you'll
+If `npm run dev` or `npm run serve` is run before installing dependencies, you'll
 see an `esbuild: not found` error. Always run `npm install` first to download
 all required packages.
 
-Once the server is running, open `http://localhost:3000` in your browser.
+Once the server is running, open `http://localhost:4321` in your browser.
 
 You can also use the `deploy.sh` script to automatically pull the latest code,
 install dependencies and start the server:
@@ -47,10 +47,16 @@ install dependencies and start the server:
 
 ## Development
 
-Rebuild the bundle whenever you update the code:
+Rebuild the bundle and Astro site whenever you update the code:
 
 ```bash
 npm run build
+```
+
+After building you can serve the production build:
+
+```bash
+npm start
 ```
 
 ## Roadmap
