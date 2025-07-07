@@ -135,28 +135,28 @@ export function createPlanetMeshes(toi) {
     { useEmissiveMap: true, emissiveIntensity: 1.5 }
   );
 
-  const mercuryMesh = createSphereMesh(0.1, 0xaaaaaa, 'textures/mercury.jpg');
+  const mercuryMesh = createSphereMesh(0.1, 0xaaaaaa, 'textures/mercury.jpg', 64, true);
 
-  const venusMesh = createSphereMesh(0.15, 0xffddaa, 'textures/venus.jpg');
+  const venusMesh = createSphereMesh(0.15, 0xffddaa, 'textures/venus.jpg', 64, true);
 
   // Use a white base color so the texture appears unmodified
   const earthMesh = createSphereMesh(0.2, 0xffffff, 'textures/earth.jpg', 64, true);
 
   // Slightly higher detail for the moon
-  const moonMesh = createSphereMesh(0.05, 0xdddddd, 'textures/moon.jpg', 96);
+  const moonMesh = createSphereMesh(0.05, 0xdddddd, 'textures/moon.jpg', 96, true);
 
-  const marsMesh = createSphereMesh(0.15, 0xff5533, 'textures/mars.jpg');
+  const marsMesh = createSphereMesh(0.15, 0xff5533, 'textures/mars.jpg', 64, true);
 
-  const jupiterMesh = createSphereMesh(0.3, 0xffaa33, 'textures/jupiter.jpg');
+  const jupiterMesh = createSphereMesh(0.3, 0xffaa33, 'textures/jupiter.jpg', 64, true);
 
-  const saturnMesh = createSphereMesh(0.25, 0xffcc88, 'textures/saturn.jpg');
+  const saturnMesh = createSphereMesh(0.25, 0xffcc88, 'textures/saturn.jpg', 64, true);
   const saturnRing = createRingMesh(0.35, 0.55, 'textures/saturn_ring.png');
   saturnMesh.add(saturnRing);
 
-  const uranusMesh = createSphereMesh(0.22, 0x66bbff, 'textures/uranus.jpg');
+  const uranusMesh = createSphereMesh(0.22, 0x66bbff, 'textures/uranus.jpg', 64, true);
 
-  const neptuneMesh = createSphereMesh(0.21, 0x4477ff, 'textures/neptune.jpg');
-  const plutoMesh = createSphereMesh(0.1, 0xbbbbbb, 'textures/pluto.jpg');
+  const neptuneMesh = createSphereMesh(0.21, 0x4477ff, 'textures/neptune.jpg', 64, true);
+  const plutoMesh = createSphereMesh(0.1, 0xbbbbbb, 'textures/pluto.jpg', 64, true);
   const issMesh = createCubeMesh(0.03, 0xffffff);
 
   const mercuryOrbit = createPlanetOrbitLine('mercury');

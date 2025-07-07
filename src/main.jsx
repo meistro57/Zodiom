@@ -91,8 +91,8 @@ for (const [name, body] of Object.entries(bodies)) {
 
 async function animate() {
   requestAnimationFrame(animate);
+  const delta = clock.getDelta();
   if (playing) {
-    const delta = clock.getDelta();
     toi = advanceTime(toi, delta * 86400000 * speed); // advance with speed factor
     document.getElementById('datetime').value = toi.getDate().toISOString().slice(0,16);
     bodies.sun.astro = createSunSolo(toi);
@@ -109,6 +109,9 @@ async function animate() {
     await updatePositions(bodies, toi);
     updateSmallBodyPositions(smallBodies, toi);
   }
+  Object.values(bodies).forEach(b => {
+    if (b.mesh) b.mesh.rotation.y += delta * 0.5;
+  });
   controls.update();
   renderer.render(scene, camera);
   labelRenderer.render(scene, camera);
