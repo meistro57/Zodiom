@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import {CSS2DRenderer} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import {RGBELoader} from 'three/examples/jsm/loaders/RGBELoader.js';
 
 function createStarfield(count = 5000, radius = 150) {
   const geometry = new THREE.BufferGeometry();
@@ -44,6 +45,13 @@ export function setupScene(container) {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   container.appendChild(renderer.domElement);
+
+  // Load an HDR environment map for more realistic lighting
+  new RGBELoader().load('textures/royal_esplanade_1k.hdr', tex => {
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    scene.environment = tex;
+    renderer.toneMappingExposure = 1.25;
+  });
 
   const labelRenderer = new CSS2DRenderer();
   labelRenderer.setSize(window.innerWidth, window.innerHeight);
