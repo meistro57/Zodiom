@@ -1,7 +1,4 @@
 import * as THREE from "three";
-import { createRoot } from 'react-dom/client';
-import React from 'react';
-import UI from './ui.jsx';
 import {setupScene} from './setupScene.js';
 import {CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import {parseDateTime, advanceTime} from './timeUtils.js';
@@ -21,18 +18,8 @@ import { createMoon } from "astronomy-bundle/moon";
 import {createSun as createSunSolo} from "astronomy-bundle/sun";
 import createPluto from './pluto.js';
 
-const uiRoot = document.getElementById('ui-root');
-if (uiRoot) {
-  const root = createRoot(uiRoot);
-  root.render(<UI />);
-}
-
 // Wait for the React UI to finish mounting before initializing the scene
-if (document.getElementById('datetime')) {
-  requestAnimationFrame(init);
-} else {
-  window.addEventListener('ui-ready', () => requestAnimationFrame(init), { once: true });
-}
+window.addEventListener('ui-ready', () => requestAnimationFrame(init), { once: true });
 
 function init() {
   const container = document.body;
