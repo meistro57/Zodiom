@@ -20,6 +20,14 @@ describe('parseDateTime', () => {
     assert.ok(nearlyEqual(t, before) || (t > before && t <= after));
   });
 
+  it('returns current time for invalid input', () => {
+    const before = Date.now();
+    const toi = parseDateTime('not-a-date');
+    const after = Date.now();
+    const t = toi.getDate().getTime();
+    assert.ok(nearlyEqual(t, before) || (t > before && t <= after));
+  });
+
   it('advances time by given milliseconds', () => {
     const toi = parseDateTime('2020-01-01T00:00:00Z');
     const advanced = advanceTime(toi, 24 * 60 * 60 * 1000); // plus one day

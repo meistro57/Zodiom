@@ -40,9 +40,14 @@ export default function UI() {
         <input type="checkbox" id="issToggle" defaultChecked />
       </label>
       <label className="flex items-center justify-between">
+        Show Stars
+        <input type="checkbox" id="starsToggle" defaultChecked />
+      </label>
+      <label className="flex items-center justify-between">
         Speed
         <input type="range" id="speedRange" min="0.1" max="5" step="0.1" defaultValue="1" />
       </label>
+      <button id="now" className="px-2 py-1 bg-white/20 rounded">Now</button>
       <button id="playTimeline" className="px-2 py-1 bg-white/20 rounded">Play Timeline</button>
       <button id="resetCamera" className="px-2 py-1 bg-white/20 rounded">Reset Camera</button>
     </motion.div>

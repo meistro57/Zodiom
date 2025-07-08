@@ -5,6 +5,9 @@ export function parseDateTime(value) {
     return createTimeOfInterest.fromCurrentTime();
   }
   const date = new Date(value);
+  if (isNaN(date)) {
+    return createTimeOfInterest.fromCurrentTime();
+  }
   return createTimeOfInterest.fromDate(date);
 }
 

@@ -85,5 +85,5 @@ export function setupScene(container) {
     labelRenderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  return {scene, camera, renderer, controls, light, labelRenderer};
+  return {scene, camera, renderer, controls, light, labelRenderer, stars};
 }
