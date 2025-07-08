@@ -25,6 +25,11 @@ Zodiom is an in-browser 3D cosmic simulator built with Three.js and Astronomy Bu
 - Physically accurate lighting and smoother camera controls
 - Added Eros asteroid to the small bodies catalog
 - HDR environment map placeholder for an Octane-style look (replace with your own .hdr file)
+- Random Date button for surprise exploration
+- Reverse timeline playback
+- Toggle fullscreen mode
+- Wireframe rendering option
+- Reset timeline speed with one click
 
 ## Getting Started
 

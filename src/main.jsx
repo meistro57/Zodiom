@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import {setupScene} from './setupScene.js';
 import {CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
-import {parseDateTime, advanceTime} from './timeUtils.js';
+import {parseDateTime, advanceTime, randomDateTime, formatDateTime} from './timeUtils.js';
 import {createPlanetMeshes, updatePositions} from './planets.js';
 import {createSmallBodyMeshes, updateSmallBodyPositions} from './smallBodies.js';
 import {
@@ -28,6 +28,7 @@ function init() {
   const clock = new THREE.Clock();
   let playing = false;
   let speed = 1;
+  let direction = 1;
 
   let {objects, bodies, moonOrbit, issOrbit} = createPlanetMeshes(toi);
   let smallBodies;
@@ -80,7 +81,7 @@ async function animate() {
   requestAnimationFrame(animate);
   const delta = clock.getDelta();
   if (playing) {
-    toi = advanceTime(toi, delta * 86400000 * speed); // advance with speed factor
+    toi = advanceTime(toi, delta * 86400000 * speed * direction); // advance with speed and direction
     document.getElementById('datetime').value = toi.getDate().toISOString().slice(0,16);
     bodies.sun.astro = createSunSolo(toi);
     bodies.mercury.astro = createMercury(toi);
@@ -196,6 +197,41 @@ resetBtn.addEventListener('click', () => {
   camera.position.set(0, 5, 10);
   controls.target.set(0, 0, 0);
   controls.update();
+});
+
+const randomBtn = document.getElementById('randomDate');
+randomBtn.addEventListener('click', () => {
+  const r = randomDateTime(1950, 2050);
+  document.getElementById('datetime').value = formatDateTime(r).slice(0,16);
+  refresh();
+});
+
+const reverseBtn = document.getElementById('reverseTime');
+reverseBtn.addEventListener('click', () => {
+  direction *= -1;
+  reverseBtn.textContent = direction === 1 ? 'Reverse Time' : 'Forward Time';
+});
+
+const resetSpeedBtn = document.getElementById('resetSpeed');
+resetSpeedBtn.addEventListener('click', () => {
+  speedRange.value = 1;
+  speed = 1;
+});
+
+const fullscreenBtn = document.getElementById('fullscreen');
+fullscreenBtn.addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.body.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+});
+
+const wireframeToggle = document.getElementById('wireframeToggle');
+wireframeToggle.addEventListener('change', () => {
+  objects.forEach(obj => {
+    if (obj.material) obj.material.wireframe = wireframeToggle.checked;
+  });
 });
 
 const playBtn = document.getElementById('playTimeline');
