@@ -58,6 +58,19 @@ export const SMALL_BODIES = [
       epoch: 2459036.5
     },
     color: 0xffaa55
+  },
+  {
+    name: 'Eros',
+    elements: {
+      a: 1.458,
+      e: 0.223,
+      i: 10.830,
+      Omega: 304.4,
+      w: 178.7,
+      M0: 25.0,
+      epoch: 2458849.5
+    },
+    color: 0xa0a0a0
   }
 ];
 

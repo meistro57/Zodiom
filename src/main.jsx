@@ -23,7 +23,7 @@ window.addEventListener('ui-ready', () => requestAnimationFrame(init), { once: t
 
 function init() {
   const container = document.body;
-  const {scene, camera, renderer, controls, light, labelRenderer} = setupScene(container);
+  const {scene, camera, renderer, controls, light, labelRenderer, stars} = setupScene(container);
   let toi = parseDateTime(document.getElementById('datetime').value);
   const clock = new THREE.Clock();
   let playing = false;
@@ -164,6 +164,11 @@ issToggle.addEventListener('change', () => {
   issOrbit.visible = issToggle.checked && orbitToggle.checked;
 });
 
+const starsToggle = document.getElementById('starsToggle');
+starsToggle.addEventListener('change', () => {
+  stars.visible = starsToggle.checked;
+});
+
 const orbitToggle = document.getElementById('orbitToggle');
 orbitToggle.addEventListener('change', () => {
   orbits.forEach(o => o.visible = orbitToggle.checked);
@@ -172,10 +177,18 @@ orbitToggle.addEventListener('change', () => {
 orbits.forEach(o => o.visible = orbitToggle.checked);
 if (!issToggle.checked) issOrbit.visible = false;
 bodies.iss.mesh.visible = issToggle.checked;
+stars.visible = starsToggle.checked;
 
 const speedRange = document.getElementById('speedRange');
 speedRange.addEventListener('input', () => {
   speed = parseFloat(speedRange.value);
+});
+
+const nowBtn = document.getElementById('now');
+nowBtn.addEventListener('click', () => {
+  const now = new Date();
+  document.getElementById('datetime').value = now.toISOString().slice(0,16);
+  refresh();
 });
 
 const resetBtn = document.getElementById('resetCamera');
