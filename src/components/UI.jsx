@@ -50,6 +50,14 @@ export default function UI() {
       <button id="now" className="px-2 py-1 bg-white/20 rounded">Now</button>
       <button id="playTimeline" className="px-2 py-1 bg-white/20 rounded">Play Timeline</button>
       <button id="resetCamera" className="px-2 py-1 bg-white/20 rounded">Reset Camera</button>
+      <button id="randomDate" className="px-2 py-1 bg-white/20 rounded">Random Date</button>
+      <button id="reverseTime" className="px-2 py-1 bg-white/20 rounded">Reverse Time</button>
+      <button id="resetSpeed" className="px-2 py-1 bg-white/20 rounded">Reset Speed</button>
+      <button id="fullscreen" className="px-2 py-1 bg-white/20 rounded">Fullscreen</button>
+      <label className="flex items-center justify-between">
+        Wireframe Mode
+        <input type="checkbox" id="wireframeToggle" />
+      </label>
     </motion.div>
   );
 }
