@@ -5,8 +5,26 @@ export function parseDateTime(value) {
     return createTimeOfInterest.fromCurrentTime();
   }
   const date = new Date(value);
-  if (isNaN(date)) {
+  // Guard against unparsable or out-of-range dates (e.g. Feb 30)
+  if (Number.isNaN(date.getTime())) {
     return createTimeOfInterest.fromCurrentTime();
+  }
+  const match = value.match(
+    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?(?:Z)?$/
+  );
+  if (match) {
+    const [, y, m, d, hh, mm, ss = '00'] = match;
+    const [year, month, day, hour, minute, second] = [y, m, d, hh, mm, ss].map(Number);
+    if (
+      date.getUTCFullYear() !== year ||
+      date.getUTCMonth() + 1 !== month ||
+      date.getUTCDate() !== day ||
+      date.getUTCHours() !== hour ||
+      date.getUTCMinutes() !== minute ||
+      date.getUTCSeconds() !== second
+    ) {
+      return createTimeOfInterest.fromCurrentTime();
+    }
   }
   return createTimeOfInterest.fromDate(date);
 }

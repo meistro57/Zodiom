@@ -28,6 +28,14 @@ describe('parseDateTime', () => {
     assert.ok(nearlyEqual(t, before) || (t > before && t <= after));
   });
 
+  it('returns current time for out-of-range dates', () => {
+    const before = Date.now();
+    const toi = parseDateTime('2020-02-30T00:00:00Z');
+    const after = Date.now();
+    const t = toi.getDate().getTime();
+    assert.ok(nearlyEqual(t, before) || (t > before && t <= after));
+  });
+
   it('advances time by given milliseconds', () => {
     const toi = parseDateTime('2020-01-01T00:00:00Z');
     const advanced = advanceTime(toi, 24 * 60 * 60 * 1000); // plus one day
