@@ -34,16 +34,24 @@ window.addEventListener("ui-ready", () => requestAnimationFrame(init), {
   once: true
 });
 
-// Mount the React UI once the DOM is ready
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM loaded, rendering UI...");
+// Mount the React UI once the DOM is ready.
+// If the script executes after the DOM has already been loaded,
+// `DOMContentLoaded` won't fire, so we immediately attempt to mount.
+function mountUI() {
+  console.log("Rendering UI...");
   const uiRoot = document.getElementById("ui-root");
-  if (!uiRoot) {
+  if (!(uiRoot instanceof HTMLElement)) {
     console.error("UI root element not found");
     return;
   }
   createRoot(uiRoot).render(<UI />);
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", mountUI);
+} else {
+  mountUI();
+}
 
 function init() {
   const container = document.body;
