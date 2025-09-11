@@ -1,9 +1,20 @@
 import * as THREE from "three";
-import {setupScene} from './setupScene.js';
-import {CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
-import {parseDateTime, advanceTime, randomDateTime, formatDateTime} from './timeUtils.js';
-import {createPlanetMeshes, updatePositions} from './planets.js';
-import {createSmallBodyMeshes, updateSmallBodyPositions} from './smallBodies.js';
+import { setupScene } from "./setupScene.js";
+import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer.js";
+import {
+  parseDateTime,
+  advanceTime,
+  randomDateTime,
+  formatDateTime
+} from "./timeUtils.js";
+import { createPlanetMeshes, updatePositions } from "./planets.js";
+import {
+  createSmallBodyMeshes,
+  updateSmallBodyPositions
+} from "./smallBodies.js";
+import React from "react";
+import { createRoot } from "react-dom/client";
+import UI from "./components/UI.jsx";
 import {
   createMercury,
   createVenus,
@@ -16,10 +27,23 @@ import {
 import { createEarth } from "astronomy-bundle/earth";
 import { createMoon } from "astronomy-bundle/moon";
 import {createSun as createSunSolo} from "astronomy-bundle/sun";
-import createPluto from './pluto.js';
+import createPluto from "./pluto.js";
 
 // Wait for the React UI to finish mounting before initializing the scene
-window.addEventListener('ui-ready', () => requestAnimationFrame(init), { once: true });
+window.addEventListener("ui-ready", () => requestAnimationFrame(init), {
+  once: true
+});
+
+// Mount the React UI once the DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM loaded, rendering UI...");
+  const uiRoot = document.getElementById("ui-root");
+  if (!uiRoot) {
+    console.error("UI root element not found");
+    return;
+  }
+  createRoot(uiRoot).render(<UI />);
+});
 
 function init() {
   const container = document.body;
