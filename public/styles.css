@@ -67,4 +67,10 @@ canvas {
   font-size: 12px;
   pointer-events: none;
   text-shadow: 0 0 5px #000;
+  color: #fff;
+}
+
+body.light .label {
+  color: #000;
+  text-shadow: 0 0 5px #fff;
 }
