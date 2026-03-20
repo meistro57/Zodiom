@@ -2,7 +2,17 @@
 
 Zodiom is an in-browser 3D cosmic simulator built with Three.js and Astronomy Bundle. Witness real-time planetary positions, solar eclipses, atmospheric effects, and the Milky Way — all rendered with physically accurate lighting and NASA-quality textures.
 
-![Zodiom Screenshot](zodiom.png)
+![Zodiom — Solar System Overview](screenshots/solar-system.png)
+
+*Real-time solar system with NASA-quality textures, 20,000 stars, and HDR lighting*
+
+![Zodiom — Solar Eclipse (2024-04-08)](screenshots/eclipse.png)
+
+*Total solar eclipse — Moon's shadow with reddish penumbra crawling across Earth*
+
+![Zodiom — Mystic Mode](screenshots/mystic-mode.png)
+
+*Mystic Mode: sacred geometry aesthetic with glowing orbital paths*
 
 ## Features
 
