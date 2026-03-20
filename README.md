@@ -1,76 +1,95 @@
 # Zodiom
 
-Zodiom is an in-browser 3D cosmic simulator built with Three.js and Astronomy Bundle. It lets you witness planetary alignments across time and toggle between photorealistic and mystical modes infused with sacred geometry. Made for stargazers, seekers and space enthusiasts.
+Zodiom is an in-browser 3D cosmic simulator built with Three.js and Astronomy Bundle. Witness real-time planetary positions, solar eclipses, atmospheric effects, and the Milky Way — all rendered with physically accurate lighting and NASA-quality textures.
+
+![Zodiom Screenshot](zodiom.png)
 
 ## Features
 
-- Real-time positions for all major planets, now including Pluto
-- Travel to any date in history or the future
-- Mystic Mode for a symbolic, sacred look
-- Optional light mode for the UI
-- Orbit controls to freely navigate the scene
-- Animated timeline for smooth time travel
-- Planet labels with optional toggle
-- Toggle visibility of planetary orbits
-- Visual asteroid belt between Mars and Jupiter
-- Orbits for known asteroids and comets
-- Watch the International Space Station orbit the Earth
-- Toggle ISS visibility
-- Increased Moon and ISS distance from Earth for improved visibility
-- Adjustable timeline speed
-- Reset camera position with one click
-- Expanded starfield backdrop
-- Toggle starfield visibility
-- Jump to the current time with the Now button
-- Physically accurate lighting and smoother camera controls
-- Added Eros asteroid to the small bodies catalog
-- HDR environment map placeholder for an Octane-style look (replace with your own .hdr file)
-- Random Date button for surprise exploration
-- Reverse timeline playback
-- Toggle fullscreen mode
-- Wireframe rendering option
-- Reset timeline speed with one click
+### 🌍 Photorealistic Rendering
+- NASA-quality planet textures for all bodies
+- Earth with day/night terminator, city lights on the dark side, and cloud layer
+- Custom GLSL atmosphere shader — Earth's iconic blue limb glow visible from space
+- Physically accurate lighting via ACES filmic tonemapping and HDR environment map
+
+### 🌑 Solar Eclipse System
+- Real volumetric eclipse shadow cast by the Moon onto Earth
+- Umbra + reddish penumbra gradient (just like a real total solar eclipse)
+- Scrub the timeline to 2024-04-08 to watch the shadow crawl across North America
+
+### ☀️ Sun Effects
+- Animated pulsing corona with additive glow
+- Realistic lens flare
+- Solar surface rotation animation
+
+### 🌌 Deep Space
+- 20,000 stars with size and color variation (blue giants, orange dwarfs)
+- Milky Way band concentrated along the galactic plane
+- HDR space environment map
+
+### 🪐 Planet Details
+- Saturn with Cassini-quality ring system — proper radial UV, transparency variation, 26.7° tilt
+- Uranus on its side (97.8° axial tilt)
+- Planetary atmospheres: Earth (blue), Venus (yellow haze), Mars (pink tint)
+- Asteroid belt with varied particle sizes
+
+### ⏱️ Time Travel
+- Real-time positions for all planets, Moon, Pluto, and ISS
+- Travel to any date from 1950 to 2050
+- Play/pause animated timeline with adjustable speed
+- Reverse time playback
+- Jump to now or a random date
+
+### 🎛️ Modern UI
+- Glassmorphism control panel with Space Grotesk + Orbitron fonts
+- Collapsible sidebar with grouped controls
+- Custom toggle switches
+- Mystic Mode — sacred geometry aesthetic with glowing orbits
+- Wireframe mode, label toggle, fullscreen support
 
 ## Getting Started
-
-Install dependencies and start the Astro development server (the Three.js bundle is built automatically):
 
 ```bash
 npm install
 npm run dev
 ```
 
-If `npm run dev` or `npm run serve` is run before installing dependencies, you'll
-see an `esbuild: not found` error. Always run `npm install` first to download
-all required packages.
+Open `http://localhost:4321` in your browser.
 
-Once the server is running, open `http://localhost:4321` in your browser.
+> ⚠️ Always run `npm install` before `npm run dev` — esbuild is a dev dependency.
 
-You can also use the `deploy.sh` script to automatically pull the latest code,
-install dependencies and start the server:
+## Build for Production
+
+```bash
+npm run build
+npm start
+```
+
+Or use the deploy script:
 
 ```bash
 ./deploy.sh
 ```
 
-## Development
+## Try This
 
-Rebuild the bundle and Astro site whenever you update the code:
-
-```bash
-npm run build
-```
-
-After building you can serve the production build:
-
-```bash
-npm start
-```
+**See a total solar eclipse:**
+1. Set date to `2024-04-08T18:00`
+2. Click **Go**
+3. Zoom in on Earth
+4. Watch the Moon's shadow (with reddish penumbra) cross North America
 
 ## Roadmap
 
-- Add all remaining planets and major moons (completed)
-- Animated timeline for smooth time travel (completed)
-- Highlight celestial events such as eclipses and conjunctions
-- Optional VR/AR mode
-- Ability to save and share favorite scenes
+- [x] All planets + Moon, Pluto, ISS
+- [x] Animated timeline
+- [x] Photorealistic textures + HDR lighting
+- [x] Eclipse shadow system
+- [x] Earth atmosphere shader
+- [x] Sun corona + lens flare
+- [x] Milky Way starfield
+- [ ] Conjunction/opposition detector
+- [ ] Zodiac constellation overlay
+- [ ] VR/AR mode
+- [ ] Save & share scenes
+- [ ] Planet info panel on click

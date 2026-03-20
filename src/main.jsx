@@ -34,9 +34,6 @@ window.addEventListener("ui-ready", () => requestAnimationFrame(init), {
   once: true
 });
 
-// Mount the React UI once the DOM is ready.
-// If the script executes after the DOM has already been loaded,
-// `DOMContentLoaded` won't fire, so we immediately attempt to mount.
 function mountUI() {
   console.log("Rendering UI...");
   const uiRoot = document.getElementById("ui-root");
@@ -62,7 +59,11 @@ function init() {
   let speed = 1;
   let direction = 1;
 
-  let {objects, bodies, moonOrbit, issOrbit} = createPlanetMeshes(toi);
+  let {
+    objects, bodies, moonOrbit, issOrbit,
+    earthMaterial, atmosphereMaterials, coronaPlanes
+  } = createPlanetMeshes(toi);
+
   let smallBodies;
   const result = createSmallBodyMeshes(toi);
   const sbObjects = result.objects;
@@ -75,17 +76,18 @@ function init() {
     }
   });
 
-const labels = [];
-for (const [name, body] of Object.entries(bodies)) {
-  if (!body.mesh) continue; // skip helper properties like _sim
-  const div = document.createElement('div');
-  div.className = 'label';
-  div.textContent = name.charAt(0).toUpperCase() + name.slice(1);
-  const label = new CSS2DObject(div);
-  label.position.set(0, 0.3, 0);
-  body.mesh.add(label);
-  labels.push(label);
-}
+  const labels = [];
+  for (const [name, body] of Object.entries(bodies)) {
+    if (!body.mesh) continue;
+    const div = document.createElement('div');
+    div.className = 'label';
+    div.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+    const label = new CSS2DObject(div);
+    label.position.set(0, 0.3, 0);
+    body.mesh.add(label);
+    labels.push(label);
+  }
+
   const orbits = objects.filter(o => o.type === 'LineLoop');
 
   const raycaster = new THREE.Raycaster();
@@ -109,169 +111,204 @@ for (const [name, body] of Object.entries(bodies)) {
     }
   });
 
-async function animate() {
-  requestAnimationFrame(animate);
-  const delta = clock.getDelta();
-  if (playing) {
-    toi = advanceTime(toi, delta * 86400000 * speed * direction); // advance with speed and direction
-    document.getElementById('datetime').value = toi.getDate().toISOString().slice(0,16);
-    bodies.sun.astro = createSunSolo(toi);
+  // Reusable vectors for per-frame uniform updates
+  const _sunWorldPos  = new THREE.Vector3();
+  const _moonWorldPos = new THREE.Vector3();
+
+  async function animate() {
+    requestAnimationFrame(animate);
+    const delta = clock.getDelta();
+
+    if (playing) {
+      toi = advanceTime(toi, delta * 86400000 * speed * direction);
+      document.getElementById('datetime').value = toi.getDate().toISOString().slice(0,16);
+      bodies.sun.astro     = createSunSolo(toi);
+      bodies.mercury.astro = createMercury(toi);
+      bodies.venus.astro   = createVenus(toi);
+      bodies.earth.astro   = createEarth(toi);
+      bodies.moon.astro    = createMoon(toi);
+      bodies.mars.astro    = createMars(toi);
+      bodies.jupiter.astro = createJupiter(toi);
+      bodies.saturn.astro  = createSaturn(toi);
+      bodies.uranus.astro  = createUranus(toi);
+      bodies.neptune.astro = createNeptune(toi);
+      bodies.pluto.astro   = createPluto(toi);
+      await updatePositions(bodies, toi);
+      updateSmallBodyPositions(smallBodies, toi);
+    }
+
+    // ── Rotate sun corona planes at different speeds ──
+    if (coronaPlanes) {
+      coronaPlanes[0].rotation.z += delta * 0.30;
+      coronaPlanes[1].rotation.z -= delta * 0.17;
+      coronaPlanes[2].rotation.z += delta * 0.09;
+    }
+
+    // ── Update Earth eclipse shader uniforms ──
+    if (earthMaterial) {
+      bodies.sun.mesh.getWorldPosition(_sunWorldPos);
+      bodies.moon.mesh.getWorldPosition(_moonWorldPos);
+      earthMaterial.uniforms.sunPosition.value.copy(_sunWorldPos);
+      earthMaterial.uniforms.moonPosition.value.copy(_moonWorldPos);
+    }
+
+    // ── Update atmosphere sun-position uniforms ──
+    if (atmosphereMaterials) {
+      bodies.sun.mesh.getWorldPosition(_sunWorldPos);
+      for (const mat of Object.values(atmosphereMaterials)) {
+        mat.uniforms.sunPosition.value.copy(_sunWorldPos);
+      }
+    }
+
+    // Spin all bodies (skip ring/atmosphere/lensflare children – they're not in bodies)
+    Object.values(bodies).forEach(b => {
+      if (b.mesh) b.mesh.rotation.y += delta * 0.5;
+    });
+
+    controls.update();
+    renderer.render(scene, camera);
+    labelRenderer.render(scene, camera);
+  }
+  animate();
+
+  async function refresh() {
+    toi = parseDateTime(document.getElementById('datetime').value);
+    bodies.sun.astro     = createSunSolo(toi);
     bodies.mercury.astro = createMercury(toi);
-    bodies.venus.astro = createVenus(toi);
-    bodies.earth.astro = createEarth(toi);
-    bodies.moon.astro = createMoon(toi);
-    bodies.mars.astro = createMars(toi);
+    bodies.venus.astro   = createVenus(toi);
+    bodies.earth.astro   = createEarth(toi);
+    bodies.moon.astro    = createMoon(toi);
+    bodies.mars.astro    = createMars(toi);
     bodies.jupiter.astro = createJupiter(toi);
-    bodies.saturn.astro = createSaturn(toi);
-    bodies.uranus.astro = createUranus(toi);
+    bodies.saturn.astro  = createSaturn(toi);
+    bodies.uranus.astro  = createUranus(toi);
     bodies.neptune.astro = createNeptune(toi);
-    bodies.pluto.astro = createPluto(toi);
+    bodies.pluto.astro   = createPluto(toi);
     await updatePositions(bodies, toi);
     updateSmallBodyPositions(smallBodies, toi);
   }
-  Object.values(bodies).forEach(b => {
-    if (b.mesh) b.mesh.rotation.y += delta * 0.5;
+
+  document.getElementById('go').addEventListener('click', () => { refresh(); });
+
+  const mysticToggle = document.getElementById('mysticToggle');
+  mysticToggle.addEventListener('change', () => {
+    const mystic = mysticToggle.checked;
+    objects.forEach(obj => {
+      if (!obj.material) return;
+      // Skip custom ShaderMaterial objects (Earth) – they handle their own shading
+      if (obj.material.isShaderMaterial) return;
+      if (mystic) {
+        obj.material.emissive = obj.material.color;
+        obj.material.emissiveIntensity = 0.5;
+        if (obj.type === 'LineLoop') obj.material.color.set(0xffff00);
+      } else {
+        obj.material.emissive = new THREE.Color(0x000000);
+        obj.material.emissiveIntensity = 0;
+        if (obj.type === 'LineLoop') obj.material.color.set(0x888888);
+      }
+      obj.material.needsUpdate = true;
+    });
   });
-  controls.update();
-  renderer.render(scene, camera);
-  labelRenderer.render(scene, camera);
-}
-animate();
 
-async function refresh() {
-  toi = parseDateTime(document.getElementById('datetime').value);
-  bodies.sun.astro = createSunSolo(toi);
-  bodies.mercury.astro = createMercury(toi);
-  bodies.venus.astro = createVenus(toi);
-  bodies.earth.astro = createEarth(toi);
-  bodies.moon.astro = createMoon(toi);
-  bodies.mars.astro = createMars(toi);
-  bodies.jupiter.astro = createJupiter(toi);
-  bodies.saturn.astro = createSaturn(toi);
-  bodies.uranus.astro = createUranus(toi);
-  bodies.neptune.astro = createNeptune(toi);
-  bodies.pluto.astro = createPluto(toi);
-  await updatePositions(bodies, toi);
-  updateSmallBodyPositions(smallBodies, toi);
-}
-
-document.getElementById('go').addEventListener('click', () => {
-  refresh();
-});
-
-const mysticToggle = document.getElementById('mysticToggle');
-mysticToggle.addEventListener('change', () => {
-  const mystic = mysticToggle.checked;
-  objects.forEach(obj => {
-    if (mystic) {
-      obj.material.emissive = obj.material.color;
-      obj.material.emissiveIntensity = 0.5;
-      if (obj.type === 'LineLoop') obj.material.color.set(0xffff00);
+  const lightToggle = document.getElementById('lightToggle');
+  lightToggle.addEventListener('change', () => {
+    if (lightToggle.checked) {
+      document.body.classList.add('light');
     } else {
-      obj.material.emissive = new THREE.Color(0x000000);
-      obj.material.emissiveIntensity = 0;
-      if (obj.type === 'LineLoop') obj.material.color.set(0x888888);
+      document.body.classList.remove('light');
     }
-    obj.material.needsUpdate = true;
   });
-});
 
-const lightToggle = document.getElementById('lightToggle');
-lightToggle.addEventListener('change', () => {
-  if (lightToggle.checked) {
-    document.body.classList.add('light');
-  } else {
-    document.body.classList.remove('light');
-  }
-});
-
-const labelToggle = document.getElementById('labelToggle');
-labelToggle.addEventListener('change', () => {
+  const labelToggle = document.getElementById('labelToggle');
+  labelToggle.addEventListener('change', () => {
+    labels.forEach(l => l.visible = labelToggle.checked);
+  });
   labels.forEach(l => l.visible = labelToggle.checked);
-});
-labels.forEach(l => l.visible = labelToggle.checked);
 
-const issToggle = document.getElementById('issToggle');
-issToggle.addEventListener('change', () => {
-  bodies.iss.mesh.visible = issToggle.checked;
-  issOrbit.visible = issToggle.checked && orbitToggle.checked;
-});
+  const issToggle = document.getElementById('issToggle');
+  issToggle.addEventListener('change', () => {
+    bodies.iss.mesh.visible = issToggle.checked;
+    issOrbit.visible = issToggle.checked && orbitToggle.checked;
+  });
 
-const starsToggle = document.getElementById('starsToggle');
-starsToggle.addEventListener('change', () => {
-  stars.visible = starsToggle.checked;
-});
+  const starsToggle = document.getElementById('starsToggle');
+  starsToggle.addEventListener('change', () => {
+    stars.visible = starsToggle.checked;
+  });
 
-const orbitToggle = document.getElementById('orbitToggle');
-orbitToggle.addEventListener('change', () => {
+  const orbitToggle = document.getElementById('orbitToggle');
+  orbitToggle.addEventListener('change', () => {
+    orbits.forEach(o => o.visible = orbitToggle.checked);
+    if (!issToggle.checked) issOrbit.visible = false;
+  });
   orbits.forEach(o => o.visible = orbitToggle.checked);
   if (!issToggle.checked) issOrbit.visible = false;
-});
-orbits.forEach(o => o.visible = orbitToggle.checked);
-if (!issToggle.checked) issOrbit.visible = false;
-bodies.iss.mesh.visible = issToggle.checked;
-stars.visible = starsToggle.checked;
+  bodies.iss.mesh.visible = issToggle.checked;
+  stars.visible = starsToggle.checked;
 
-const speedRange = document.getElementById('speedRange');
-speedRange.addEventListener('input', () => {
-  speed = parseFloat(speedRange.value);
-});
-
-const nowBtn = document.getElementById('now');
-nowBtn.addEventListener('click', () => {
-  const now = new Date();
-  document.getElementById('datetime').value = now.toISOString().slice(0,16);
-  refresh();
-});
-
-const resetBtn = document.getElementById('resetCamera');
-resetBtn.addEventListener('click', () => {
-  camera.position.set(0, 5, 10);
-  controls.target.set(0, 0, 0);
-  controls.update();
-});
-
-const randomBtn = document.getElementById('randomDate');
-randomBtn.addEventListener('click', () => {
-  const r = randomDateTime(1950, 2050);
-  document.getElementById('datetime').value = formatDateTime(r).slice(0,16);
-  refresh();
-});
-
-const reverseBtn = document.getElementById('reverseTime');
-reverseBtn.addEventListener('click', () => {
-  direction *= -1;
-  reverseBtn.textContent = direction === 1 ? 'Reverse Time' : 'Forward Time';
-});
-
-const resetSpeedBtn = document.getElementById('resetSpeed');
-resetSpeedBtn.addEventListener('click', () => {
-  speedRange.value = 1;
-  speed = 1;
-});
-
-const fullscreenBtn = document.getElementById('fullscreen');
-fullscreenBtn.addEventListener('click', () => {
-  if (!document.fullscreenElement) {
-    document.body.requestFullscreen();
-  } else {
-    document.exitFullscreen();
-  }
-});
-
-const wireframeToggle = document.getElementById('wireframeToggle');
-wireframeToggle.addEventListener('change', () => {
-  objects.forEach(obj => {
-    if (obj.material) obj.material.wireframe = wireframeToggle.checked;
+  const speedRange = document.getElementById('speedRange');
+  speedRange.addEventListener('input', () => {
+    speed = parseFloat(speedRange.value);
   });
-});
 
-const playBtn = document.getElementById('playTimeline');
-playBtn.addEventListener('click', () => {
-  playing = !playing;
-  playBtn.textContent = playing ? 'Pause Timeline' : 'Play Timeline';
-  clock.getDelta();
-});
+  const nowBtn = document.getElementById('now');
+  nowBtn.addEventListener('click', () => {
+    const now = new Date();
+    document.getElementById('datetime').value = now.toISOString().slice(0,16);
+    refresh();
+  });
 
-refresh();
+  const resetBtn = document.getElementById('resetCamera');
+  resetBtn.addEventListener('click', () => {
+    camera.position.set(0, 5, 10);
+    controls.target.set(0, 0, 0);
+    controls.update();
+  });
+
+  const randomBtn = document.getElementById('randomDate');
+  randomBtn.addEventListener('click', () => {
+    const r = randomDateTime(1950, 2050);
+    document.getElementById('datetime').value = formatDateTime(r).slice(0,16);
+    refresh();
+  });
+
+  const reverseBtn = document.getElementById('reverseTime');
+  reverseBtn.addEventListener('click', () => {
+    direction *= -1;
+    reverseBtn.textContent = direction === 1 ? 'Reverse Time' : 'Forward Time';
+  });
+
+  const resetSpeedBtn = document.getElementById('resetSpeed');
+  resetSpeedBtn.addEventListener('click', () => {
+    speedRange.value = 1;
+    speed = 1;
+  });
+
+  const fullscreenBtn = document.getElementById('fullscreen');
+  fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.body.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  });
+
+  const wireframeToggle = document.getElementById('wireframeToggle');
+  wireframeToggle.addEventListener('change', () => {
+    objects.forEach(obj => {
+      // Skip custom ShaderMaterial – wireframe looks broken with custom shaders
+      if (obj.material && !obj.material.isShaderMaterial) {
+        obj.material.wireframe = wireframeToggle.checked;
+      }
+    });
+  });
+
+  const playBtn = document.getElementById('playTimeline');
+  playBtn.addEventListener('click', () => {
+    playing = !playing;
+    playBtn.textContent = playing ? 'Pause Timeline' : 'Play Timeline';
+    clock.getDelta();
+  });
+
+  refresh();
 }
